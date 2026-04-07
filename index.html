@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExpatInEgypt — Your Life in Egypt, Simplified</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C8102E;
+    --red-dark: #8B0000;
+    --red-light: #FCEBEB;
+    --gold: #D4A843;
+    --gold-light: #FDF6E3;
+    --black: #1a1109;
+    --white: #FFFDF8;
+    --gray: #6b6560;
+    --gray-light: #F5F3EE;
+    --border: #E8E4DC;
+    --teal: #0F6E56;
+    --teal-light: #E1F5EE;
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── APP SHELL ── */
+  .app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--white); position: relative; }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: calc(100vh - 64px); padding-bottom: 80px; }
+  .screen.active { display: block; }
+
+  /* ── HERO HEADER ── */
+  .hero {
+    background: var(--red-dark);
+    padding: 20px 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(212,168,67,0.12);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: 40px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .hero-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; color: var(--red-dark); font-weight: 600;
+  }
+  .logo-text { color: white; }
+  .logo-text h1 { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 600; line-height: 1.1; }
+  .logo-text p { font-size: 11px; opacity: 0.7; letter-spacing: 0.03em; }
+  .lang-toggle { display: flex; gap: 4px; }
+  .lang-pill {
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.7);
+    background: transparent; transition: all 0.2s;
+  }
+  .lang-pill.active { background: var(--gold); color: var(--red-dark); border-color: var(--gold); font-weight: 500; }
+
+  .sos-strip {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .sos-strip:hover { background: rgba(255,255,255,0.18); }
+  .sos-btn-pill {
+    background: #ff3b3b; color: white;
+    padding: 5px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+    border: none; cursor: pointer;
+    animation: pulse 2s infinite;
+    white-space: nowrap;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.8} }
+  .sos-text { color: white; font-size: 12px; opacity: 0.9; line-height: 1.3; }
+
+  /* ── SECTION LABEL ── */
+  .sec-label {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--gray);
+    padding: 20px 20px 8px;
+  }
+
+  /* ── SERVICE GRID ── */
+  .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px; }
+  .svc-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 14px;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .svc-card:hover { border-color: var(--red); transform: translateY(-1px); }
+  .svc-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .svc-icon.red { background: var(--red-light); }
+  .svc-icon.gold { background: var(--gold-light); }
+  .svc-icon.teal { background: var(--teal-light); }
+  .svc-icon.blue { background: var(--blue-light); }
+  .svc-name { font-size: 14px; font-weight: 500; color: var(--black); }
+  .svc-desc { font-size: 11px; color: var(--gray); line-height: 1.4; }
+
+  /* ── QUICK CALL CARDS ── */
+  .call-list { padding: 0 20px; display: flex; flex-direction: column; gap: 8px; }
+  .call-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  .call-card:hover { border-color: var(--gold); }
+  .call-avatar {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .call-info { flex: 1; }
+  .call-name { font-size: 14px; font-weight: 500; color: var(--black); }
+  .call-sub { font-size: 12px; color: var(--gray); margin-top: 1px; }
+  .call-action {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--teal); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; border: none; cursor: pointer;
+    transition: background 0.2s; flex-shrink: 0;
+  }
+  .call-action:hover { background: #0a5040; }
+  .call-action.arrow { background: var(--gray-light); color: var(--black); }
+
+  /* ── CITY SCREEN ── */
+  .search-wrap { padding: 16px 20px; }
+  .search-input {
+    width: 100%; padding: 12px 16px;
+    background: var(--gray-light); border: 1px solid var(--border);
+    border-radius: 12px; font-size: 14px; color: var(--black);
+    font-family: 'DM Sans', sans-serif; outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--red); }
+  .city-list { padding: 0 20px; display: flex; flex-direction: column; gap: 8px; }
+  .city-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .city-card:hover { border-color: var(--red); }
+  .city-flag {
+    width: 46px; height: 46px; border-radius: 12px;
+    background: var(--gold-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+  .city-info { flex: 1; }
+  .city-name { font-size: 15px; font-weight: 500; color: var(--black); }
+  .city-ar { font-size: 12px; color: var(--gray); direction: rtl; }
+  .city-meta { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .amenity-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .pill {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    background: var(--blue-light); color: var(--blue); font-weight: 500;
+  }
+  .pill.teal { background: var(--teal-light); color: var(--teal); }
+  .pill.gold { background: var(--gold-light); color: #7a5c10; }
+
+  /* ── SAFETY SCREEN ── */
+  .safety-hero {
+    background: var(--red-dark); padding: 20px;
+    margin-bottom: 16px;
+  }
+  .safety-hero h2 { font-family: 'Playfair Display', serif; color: white; font-size: 22px; margin-bottom: 4px; }
+  .safety-hero p { color: rgba(255,255,255,0.75); font-size: 13px; }
+  .emerg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px; }
+  .emerg-card {
+    border-radius: 14px; padding: 16px 14px;
+    cursor: pointer; transition: opacity 0.2s; border: 1px solid transparent;
+  }
+  .emerg-card:hover { opacity: 0.85; }
+  .emerg-card.red { background: var(--red-light); border-color: #f09595; }
+  .emerg-card.gold { background: var(--gold-light); border-color: #EF9F27; }
+  .emerg-card.teal { background: var(--teal-light); border-color: #5DCAA5; }
+  .emerg-card.blue { background: var(--blue-light); border-color: #85B7EB; }
+  .emerg-icon { font-size: 24px; margin-bottom: 8px; }
+  .emerg-title { font-size: 14px; font-weight: 500; }
+  .emerg-card.red .emerg-title { color: #A32D2D; }
+  .emerg-card.gold .emerg-title { color: #633806; }
+  .emerg-card.teal .emerg-title { color: #085041; }
+  .emerg-card.blue .emerg-title { color: #0C447C; }
+  .emerg-num { font-size: 12px; margin-top: 2px; }
+  .emerg-card.red .emerg-num { color: #791F1F; }
+  .emerg-card.gold .emerg-num { color: #854F0B; }
+  .emerg-card.teal .emerg-num { color: #0F6E56; }
+  .emerg-card.blue .emerg-num { color: #185FA5; }
+
+  .report-card {
+    margin: 16px 20px 0;
+    background: var(--red-light); border: 1px solid #f09595;
+    border-radius: 14px; padding: 16px;
+  }
+  .report-card h3 { font-size: 15px; font-weight: 500; color: var(--red-dark); margin-bottom: 6px; }
+  .report-card p { font-size: 13px; color: #791F1F; margin-bottom: 12px; line-height: 1.5; }
+  .form-input {
+    width: 100%; padding: 10px 12px; border-radius: 10px;
+    border: 1px solid #f09595; background: white;
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: var(--black); outline: none; margin-bottom: 8px;
+  }
+  .form-textarea {
+    width: 100%; padding: 10px 12px; border-radius: 10px;
+    border: 1px solid #f09595; background: white;
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: var(--black); outline: none; resize: none; height: 80px;
+    margin-bottom: 10px;
+  }
+  .submit-btn {
+    width: 100%; padding: 12px; background: var(--red);
+    color: white; border: none; border-radius: 10px;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: background 0.2s;
+  }
+  .submit-btn:hover { background: var(--red-dark); }
+
+  .tip-card {
+    margin: 12px 20px 0;
+    background: var(--gold-light); border: 1px solid #EF9F27;
+    border-radius: 14px; padding: 14px;
+  }
+  .tip-card h4 { font-size: 13px; font-weight: 500; color: #633806; margin-bottom: 6px; }
+  .tip-card p { font-size: 12px; color: #854F0B; line-height: 1.6; }
+
+  /* ── TRANSLATE SCREEN ── */
+  .translate-wrap { padding: 20px; }
+  .lang-select-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .lang-select {
+    flex: 1; padding: 10px 12px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--gray-light);
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    color: var(--black); outline: none; cursor: pointer;
+  }
+  .swap-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--gray-light); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; cursor: pointer; flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .swap-btn:hover { background: var(--border); }
+  .translate-box {
+    background: var(--gray-light); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px; margin-bottom: 10px;
+  }
+  .translate-box textarea {
+    width: 100%; background: transparent; border: none;
+    font-size: 15px; font-family: 'DM Sans', sans-serif;
+    color: var(--black); resize: none; outline: none; height: 80px;
+  }
+  .translate-btn {
+    width: 100%; padding: 13px; background: var(--red);
+    color: white; border: none; border-radius: 12px;
+    font-size: 15px; font-weight: 500; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; margin-bottom: 10px;
+    transition: background 0.2s;
+  }
+  .translate-btn:hover { background: var(--red-dark); }
+  .result-box {
+    background: var(--teal-light); border: 1px solid #5DCAA5;
+    border-radius: 12px; padding: 14px;
+    font-size: 15px; color: #085041; line-height: 1.7; min-height: 60px;
+  }
+  .phrase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .phrase-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px;
+    cursor: pointer; transition: border-color 0.2s;
+  }
+  .phrase-card:hover { border-color: var(--teal); }
+  .phrase-en { font-size: 12px; font-weight: 500; color: var(--black); }
+  .phrase-ar { font-size: 13px; color: var(--teal); direction: rtl; margin-top: 3px; }
+  .phrase-es { font-size: 11px; color: var(--gray); margin-top: 2px; font-style: italic; }
+
+  /* ── PROFILE SCREEN ── */
+  .profile-hero {
+    background: linear-gradient(135deg, var(--red-dark), #5a0010);
+    padding: 24px 20px; text-align: center;
+  }
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--gold); margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; border: 3px solid rgba(255,255,255,0.3);
+  }
+  .profile-name { color: white; font-family: 'Playfair Display', serif; font-size: 20px; }
+  .profile-tag { color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 4px; }
+  .profile-section {
+    margin: 16px 20px 0;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+  }
+  .profile-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 13px 16px; border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .profile-row:last-child { border-bottom: none; }
+  .profile-key { color: var(--gray); }
+  .profile-val { font-weight: 500; color: var(--black); }
+  .doc-status-ok { color: var(--teal); font-size: 13px; }
+  .doc-status-warn { color: #854F0B; font-size: 13px; }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 480px;
+    background: var(--white); border-top: 1px solid var(--border);
+    display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom);
+  }
+  .nav-item {
+    flex: 1; padding: 10px 4px 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    cursor: pointer; border: none; background: transparent;
+    transition: color 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-item .nav-ico { font-size: 20px; }
+  .nav-item .nav-lbl { font-size: 10px; color: var(--gray); font-weight: 400; }
+  .nav-item.active .nav-lbl { color: var(--red); font-weight: 500; }
+  .nav-item.active .nav-ico { filter: none; }
+
+  /* ── MODAL ── */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(26,17,9,0.6); z-index: 200;
+    align-items: flex-end; justify-content: center;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--white); border-radius: 20px 20px 0 0;
+    padding: 20px; width: 100%; max-width: 480px;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
+  .modal h3 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 8px; }
+  .modal p { font-size: 13px; color: var(--gray); margin-bottom: 16px; line-height: 1.6; }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-btn {
+    flex: 1; padding: 12px; border-radius: 12px;
+    border: 1px solid var(--border); font-size: 14px;
+    cursor: pointer; background: transparent; color: var(--black);
+    font-family: 'DM Sans', sans-serif; transition: background 0.2s;
+  }
+  .modal-btn:hover { background: var(--gray-light); }
+  .modal-btn.primary { background: var(--red); color: white; border-color: var(--red); }
+  .modal-btn.primary:hover { background: var(--red-dark); }
+
+  /* ── CITY DETAIL MODAL ── */
+  .city-amenity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .city-amenity-card {
+    border-radius: 12px; padding: 14px 12px; cursor: pointer;
+    border: 1px solid transparent; transition: opacity 0.2s;
+  }
+  .city-amenity-card:hover { opacity: 0.85; }
+  .city-amenity-card.blue { background: var(--blue-light); border-color: #85B7EB; }
+  .city-amenity-card.teal { background: var(--teal-light); border-color: #5DCAA5; }
+  .city-amenity-card.gold { background: var(--gold-light); border-color: #EF9F27; }
+  .city-amenity-card.red { background: var(--red-light); border-color: #f09595; }
+  .amenity-ico { font-size: 22px; margin-bottom: 6px; }
+  .amenity-lbl { font-size: 13px; font-weight: 500; }
+  .city-amenity-card.blue .amenity-lbl { color: #0C447C; }
+  .city-amenity-card.teal .amenity-lbl { color: #085041; }
+  .city-amenity-card.gold .amenity-lbl { color: #633806; }
+  .city-amenity-card.red .amenity-lbl { color: #A32D2D; }
+  .amenity-sub { font-size: 11px; margin-top: 2px; }
+  .city-amenity-card.blue .amenity-sub { color: #185FA5; }
+  .city-amenity-card.teal .amenity-sub { color: #0F6E56; }
+  .city-amenity-card.gold .amenity-sub { color: #854F0B; }
+  .city-amenity-card.red .amenity-sub { color: #791F1F; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--black); color: white;
+    padding: 10px 20px; border-radius: 24px; font-size: 13px;
+    z-index: 999; display: none; white-space: nowrap;
+    max-width: 90vw; text-align: center;
+  }
+
+  /* ── WELCOME SCREEN ── */
+  #screen-welcome {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 100vh; padding: 40px 24px;
+    text-align: center; background: var(--red-dark);
+  }
+  .welcome-logo {
+    width: 80px; height: 80px; border-radius: 20px;
+    background: var(--gold); display: flex; align-items: center;
+    justify-content: center; font-family: 'Playfair Display', serif;
+    font-size: 40px; color: var(--red-dark); font-weight: 600;
+    margin-bottom: 24px;
+  }
+  .welcome-title { font-family: 'Playfair Display', serif; font-size: 32px; color: white; margin-bottom: 8px; }
+  .welcome-sub { font-size: 16px; color: rgba(255,255,255,0.7); margin-bottom: 40px; line-height: 1.6; }
+  .welcome-btn {
+    width: 100%; padding: 16px; background: var(--gold);
+    color: var(--red-dark); border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 500; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; margin-bottom: 10px;
+    transition: opacity 0.2s;
+  }
+  .welcome-btn:hover { opacity: 0.9; }
+  .welcome-lang { display: flex; gap: 8px; justify-content: center; margin-top: 20px; }
+  .welcome-lang-btn {
+    padding: 8px 16px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8);
+    background: transparent; cursor: pointer; font-size: 13px;
+    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+  .welcome-lang-btn.active { background: white; color: var(--red-dark); border-color: white; }
+  .egypt-flag { display: flex; height: 6px; border-radius: 3px; overflow: hidden; width: 60px; margin: 0 auto 20px; }
+  .flag-r { flex: 1; background: var(--red); }
+  .flag-w { flex: 1; background: white; }
+  .flag-b { flex: 1; background: var(--black); }
+</style>
+</head>
+<body>
+
+<!-- WELCOME SCREEN -->
+<div id="screen-welcome">
+  <div class="egypt-flag"><div class="flag-r"></div><div class="flag-w"></div><div class="flag-b"></div></div>
+  <div class="welcome-logo">ع</div>
+  <h1 class="welcome-title">Expat in Egypt</h1>
+  <p class="welcome-sub">Your complete guide to living, working, and staying safe in Egypt — in English, Spanish & Arabic.</p>
+  <button class="welcome-btn" onclick="enterApp()">Get Started →</button>
+  <div class="welcome-lang">
+    <button class="welcome-lang-btn active" onclick="setLang('en',this)">🇺🇸 English</button>
+    <button class="welcome-lang-btn" onclick="setLang('es',this)">🇪🇸 Español</button>
+    <button class="welcome-lang-btn" onclick="setLang('ar',this)">🇪🇬 عربي</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app-shell" id="main-app" style="display:none">
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="screen-home">
+    <div class="hero">
+      <div class="hero-top">
+        <div class="logo">
+          <div class="logo-mark">ع</div>
+          <div class="logo-text">
+            <h1>Expat in Egypt</h1>
+            <p>Your life in Egypt, simplified</p>
+          </div>
+        </div>
+        <div class="lang-toggle">
+          <button class="lang-pill active" onclick="setLang('en',this)">EN</button>
+          <button class="lang-pill" onclick="setLang('es',this)">ES</button>
+          <button class="lang-pill" onclick="setLang('ar',this)">AR</button>
+        </div>
+      </div>
+      <div class="sos-strip" onclick="openModal('sos')">
+        <button class="sos-btn-pill">🆘 SOS</button>
+        <span class="sos-text">Emergency? Tap for police, ambulance & embassy contacts</span>
+      </div>
+    </div>
+
+    <div class="sec-label">Professional services</div>
+    <div class="service-grid">
+      <div class="svc-card" onclick="goTo('services')">
+        <div class="svc-icon red">🏡</div>
+        <div class="svc-name">Real estate</div>
+        <div class="svc-desc">Buy, rent & lease anywhere in Egypt</div>
+      </div>
+      <div class="svc-card" onclick="goTo('services')">
+        <div class="svc-icon gold">⚖️</div>
+        <div class="svc-name">Legal / Lawyer</div>
+        <div class="svc-desc">Visa, residency & contracts</div>
+      </div>
+      <div class="svc-card" onclick="goTo('translate')">
+        <div class="svc-icon teal">🌐</div>
+        <div class="svc-name">Translation</div>
+        <div class="svc-desc">Arabic ↔ English ↔ Spanish</div>
+      </div>
+      <div class="svc-card" onclick="openModal('embassy')">
+        <div class="svc-icon blue">🏛️</div>
+        <div class="svc-name">Consulates</div>
+        <div class="svc-desc">Embassy & consular help</div>
+      </div>
+    </div>
+
+    <div class="sec-label">Quick contacts</div>
+    <div class="call-list">
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--red-light)">🏡</div>
+        <div class="call-info">
+          <div class="call-name">Cairo Realty Group</div>
+          <div class="call-sub">English-speaking realtor</div>
+        </div>
+        <button class="call-action" onclick="toast('📞 Calling Cairo Realty Group...')">📞</button>
+      </div>
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--gold-light)">⚖️</div>
+        <div class="call-info">
+          <div class="call-name">Expat Legal Helpline</div>
+          <div class="call-sub">Visa & residency law</div>
+        </div>
+        <button class="call-action" onclick="toast('📞 Connecting to legal helpline...')">📞</button>
+      </div>
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--teal-light)">🗣️</div>
+        <div class="call-info">
+          <div class="call-name">Live Interpreter</div>
+          <div class="call-sub">Arabic ↔ English · Spanish, 24/7</div>
+        </div>
+        <button class="call-action" onclick="toast('📞 Connecting live interpreter...')">📞</button>
+      </div>
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--blue-light)">🏥</div>
+        <div class="call-info">
+          <div class="call-name">As-Salam International Hospital</div>
+          <div class="call-sub">English-speaking · Cairo</div>
+        </div>
+        <button class="call-action" onclick="toast('📞 Calling As-Salam Hospital...')">📞</button>
+      </div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- CITIES SCREEN -->
+  <div class="screen" id="screen-cities">
+    <div class="hero" style="padding-bottom:16px">
+      <div style="color:white;font-family:'Playfair Display',serif;font-size:22px;font-weight:600;margin-bottom:4px">Egypt City Guide</div>
+      <div style="color:rgba(255,255,255,0.75);font-size:13px">Hospitals, doctors, restaurants & more</div>
+    </div>
+    <div class="search-wrap">
+      <input class="search-input" placeholder="🔍  Search cities..." oninput="filterCities(this.value)" />
+    </div>
+    <div class="sec-label">All major cities</div>
+    <div class="city-list" id="city-list">
+      <div class="city-card" onclick="openCity('Cairo','القاهرة','Capital · 21M population','🕌')">
+        <div class="city-flag">🕌</div>
+        <div class="city-info">
+          <div class="city-name">Cairo</div>
+          <div class="city-ar">القاهرة</div>
+          <div class="city-meta">Capital · 21M population</div>
+          <div class="amenity-pills">
+            <span class="pill">Hospitals</span><span class="pill">Doctors</span>
+            <span class="pill teal">Restaurants</span><span class="pill gold">Schools</span><span class="pill">Malls</span>
+          </div>
+        </div>
+      </div>
+      <div class="city-card" onclick="openCity('Alexandria','الإسكندرية','Coastal · 5.2M population','🌊')">
+        <div class="city-flag">🌊</div>
+        <div class="city-info">
+          <div class="city-name">Alexandria</div>
+          <div class="city-ar">الإسكندرية</div>
+          <div class="city-meta">Coastal · 5.2M population</div>
+          <div class="amenity-pills">
+            <span class="pill">Hospitals</span><span class="pill teal">Beaches</span><span class="pill gold">Restaurants</span>
+          </div>
+        </div>
+      </div>
+      <div class="city-card" onclick="openCity('Sharm El-Sheikh','شرم الشيخ','Resort city · Red Sea','🐠')">
+        <div class="city-flag">🐠</div>
+        <div class="city-info">
+          <div class="city-name">Sharm El-Sheikh</div>
+          <div class="city-ar">شرم الشيخ</div>
+          <div class="city-meta">Resort city · Red Sea</div>
+          <div class="amenity-pills">
+            <span class="pill">Clinics</span><span class="pill teal">Resorts</span><span class="pill gold">Diving</span>
+          </div>
+        </div>
+      </div>
+      <div class="city-card" onclick="openCity('Hurghada','الغردقة','Beach city · Red Sea coast','⛱️')">
+        <div class="city-flag">⛱️</div>
+        <div class="city-info">
+          <div class="city-name">Hurghada</div>
+          <div class="city-ar">الغردقة</div>
+          <div class="city-meta">Beach city · Red Sea coast</div>
+          <div class="amenity-pills">
+            <span class="pill">Hospitals</span><span class="pill teal">Hotels</span><span class="pill gold">Restaurants</span>
+          </div>
+        </div>
+      </div>
+      <div class="city-card" onclick="openCity('Luxor','الأقصر','Historical · Upper Egypt','🏛️')">
+        <div class="city-flag">🏛️</div>
+        <div class="city-info">
+          <div class="city-name">Luxor</div>
+          <div class="city-ar">الأقصر</div>
+          <div class="city-meta">Historical · Upper Egypt</div>
+          <div class="amenity-pills">
+            <span class="pill">Clinics</span><span class="pill teal">Temples</span><span class="pill gold">Restaurants</span>
+          </div>
+        </div>
+      </div>
+      <div class="city-card" onclick="openCity('Aswan','أسوان','Southern · Nile gateway','⛵')">
+        <div class="city-flag">⛵</div>
+        <div class="city-info">
+          <div class="city-name">Aswan</div>
+          <div class="city-ar">أسوان</div>
+          <div class="city-meta">Southern · Nile gateway</div>
+          <div class="amenity-pills">
+            <span class="pill">Clinics</span><span class="pill teal">Hotels</span><span class="pill gold">Markets</span>
+          </div>
+        </div>
+      </div>
+      <div class="city-card" onclick="openCity('Giza','الجيزة','Pyramids · Greater Cairo','🔺')">
+        <div class="city-flag">🔺</div>
+        <div class="city-info">
+          <div class="city-name">Giza</div>
+          <div class="city-ar">الجيزة</div>
+          <div class="city-meta">Pyramids · Greater Cairo</div>
+          <div class="amenity-pills">
+            <span class="pill">Hospitals</span><span class="pill teal">Tourism</span><span class="pill gold">Restaurants</span>
+          </div>
+        </div>
+      </div>
+      <div class="city-card" onclick="openCity('Dahab','دهب','Backpacker · Red Sea','🤿')">
+        <div class="city-flag">🤿</div>
+        <div class="city-info">
+          <div class="city-name">Dahab</div>
+          <div class="city-ar">دهب</div>
+          <div class="city-meta">Backpacker · Red Sea</div>
+          <div class="amenity-pills">
+            <span class="pill">Clinics</span><span class="pill teal">Diving</span><span class="pill gold">Cafes</span>
+          </div>
+        </div>
+      </div>
+      <div class="city-card" onclick="openCity('Marsa Alam','مرسى علم','Eco diving · South Red Sea','🪸')">
+        <div class="city-flag">🪸</div>
+        <div class="city-info">
+          <div class="city-name">Marsa Alam</div>
+          <div class="city-ar">مرسى علم</div>
+          <div class="city-meta">Eco diving · South Red Sea</div>
+          <div class="amenity-pills">
+            <span class="pill">Clinics</span><span class="pill teal">Resorts</span>
+          </div>
+        </div>
+      </div>
+      <div class="city-card" onclick="openCity('El Gouna','الجونة','Expat favorite · Red Sea','🏘️')">
+        <div class="city-flag">🏘️</div>
+        <div class="city-info">
+          <div class="city-name">El Gouna</div>
+          <div class="city-ar">الجونة</div>
+          <div class="city-meta">Expat favorite · Red Sea</div>
+          <div class="amenity-pills">
+            <span class="pill">Hospital</span><span class="pill teal">Marina</span><span class="pill gold">Restaurants</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- SERVICES SCREEN -->
+  <div class="screen" id="screen-services">
+    <div class="hero" style="padding-bottom:16px">
+      <div style="color:white;font-family:'Playfair Display',serif;font-size:22px;font-weight:600;margin-bottom:4px">Services</div>
+      <div style="color:rgba(255,255,255,0.75);font-size:13px">Real estate, legal & translation professionals</div>
+    </div>
+
+    <div class="sec-label">Real estate</div>
+    <div class="call-list">
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--red-light)">🏡</div>
+        <div class="call-info">
+          <div class="call-name">Buy property</div>
+          <div class="call-sub">Freehold & leasehold options</div>
+        </div>
+        <button class="call-action arrow" onclick="toast('Opening property listings...')">›</button>
+      </div>
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--gold-light)">🔑</div>
+        <div class="call-info">
+          <div class="call-name">Rent / Long-term lease</div>
+          <div class="call-sub">Vetted landlords & apartments</div>
+        </div>
+        <button class="call-action arrow" onclick="toast('Opening rental listings...')">›</button>
+      </div>
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--teal-light)">🏢</div>
+        <div class="call-info">
+          <div class="call-name">Commercial space</div>
+          <div class="call-sub">Offices & retail in major cities</div>
+        </div>
+        <button class="call-action arrow" onclick="toast('Opening commercial listings...')">›</button>
+      </div>
+    </div>
+
+    <div class="sec-label">Legal services</div>
+    <div class="call-list">
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--gold-light)">📄</div>
+        <div class="call-info">
+          <div class="call-name">Visa & residency</div>
+          <div class="call-sub">Work permit, investor visa, family</div>
+        </div>
+        <button class="call-action" onclick="toast('📞 Connecting to immigration lawyer...')">📞</button>
+      </div>
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--blue-light)">📝</div>
+        <div class="call-info">
+          <div class="call-name">Contract review</div>
+          <div class="call-sub">Lease, employment, business</div>
+        </div>
+        <button class="call-action" onclick="toast('📞 Connecting to contract lawyer...')">📞</button>
+      </div>
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--red-light)">🏦</div>
+        <div class="call-info">
+          <div class="call-name">Business setup</div>
+          <div class="call-sub">Register a company in Egypt</div>
+        </div>
+        <button class="call-action" onclick="toast('📞 Connecting to business lawyer...')">📞</button>
+      </div>
+    </div>
+
+    <div class="sec-label">Translation</div>
+    <div class="call-list">
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--teal-light)">🌐</div>
+        <div class="call-info">
+          <div class="call-name">Live phone interpreter</div>
+          <div class="call-sub">Arabic ↔ English · Spanish, 24/7</div>
+        </div>
+        <button class="call-action" onclick="toast('📞 Connecting live interpreter...')">📞</button>
+      </div>
+      <div class="call-card" onclick="goTo('translate')">
+        <div class="call-avatar" style="background:var(--blue-light)">✍️</div>
+        <div class="call-info">
+          <div class="call-name">Document translation</div>
+          <div class="call-sub">Certified & notarized</div>
+        </div>
+        <button class="call-action arrow">›</button>
+      </div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- SAFETY SCREEN -->
+  <div class="screen" id="screen-safety">
+    <div class="safety-hero">
+      <h2>Safety & Emergency</h2>
+      <p>Emergency numbers, crime reporting & safety tools</p>
+    </div>
+
+    <div class="sec-label">Emergency contacts</div>
+    <div class="emerg-grid">
+      <div class="emerg-card red" onclick="toast('📞 Calling Egyptian Police: 122')">
+        <div class="emerg-icon">🚨</div>
+        <div class="emerg-title">Police</div>
+        <div class="emerg-num">Dial 122</div>
+      </div>
+      <div class="emerg-card red" onclick="toast('📞 Calling Ambulance: 123')">
+        <div class="emerg-icon">🚑</div>
+        <div class="emerg-title">Ambulance</div>
+        <div class="emerg-num">Dial 123</div>
+      </div>
+      <div class="emerg-card red" onclick="toast('📞 Calling Fire Dept: 180')">
+        <div class="emerg-icon">🔥</div>
+        <div class="emerg-title">Fire dept.</div>
+        <div class="emerg-num">Dial 180</div>
+      </div>
+      <div class="emerg-card gold" onclick="toast('📞 Calling Tourist Police: 126')">
+        <div class="emerg-icon">👮</div>
+        <div class="emerg-title">Tourist police</div>
+        <div class="emerg-num">Dial 126</div>
+      </div>
+      <div class="emerg-card blue" onclick="toast('📞 Calling US Embassy: +20-2-2797-3300')">
+        <div class="emerg-icon">🇺🇸</div>
+        <div class="emerg-title">US Embassy</div>
+        <div class="emerg-num">Cairo office</div>
+      </div>
+      <div class="emerg-card teal" onclick="toast('📞 Calling Spanish Embassy: +20-2-2735-5965')">
+        <div class="emerg-icon">🇪🇸</div>
+        <div class="emerg-title">Spanish Embassy</div>
+        <div class="emerg-num">Cairo office</div>
+      </div>
+    </div>
+
+    <div class="sec-label">Report & assist</div>
+    <div class="emerg-grid">
+      <div class="emerg-card red" onclick="openModal('crime')">
+        <div class="emerg-icon">🦹</div>
+        <div class="emerg-title">Report crime</div>
+        <div class="emerg-num">Theft, assault, fraud</div>
+      </div>
+      <div class="emerg-card gold" onclick="openModal('police-report')">
+        <div class="emerg-icon">📋</div>
+        <div class="emerg-title">File report</div>
+        <div class="emerg-num">English police report</div>
+      </div>
+      <div class="emerg-card teal" onclick="toast('Opening safety map...')">
+        <div class="emerg-icon">🗺️</div>
+        <div class="emerg-title">Safety map</div>
+        <div class="emerg-num">Safe zones & alerts</div>
+      </div>
+      <div class="emerg-card blue" onclick="toast('📍 Sharing your location with emergency contact...')">
+        <div class="emerg-icon">📍</div>
+        <div class="emerg-title">Share location</div>
+        <div class="emerg-num">Send to trusted contact</div>
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <h4>✅ Safety tips for expats in Egypt</h4>
+      <p>Always carry a copy of your passport and visa. Egyptian law requires ID at all times. Register with your embassy's STEP program for travel alerts. Tourist police (126) speak English and are your best first contact in any incident.</p>
+    </div>
+
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- TRANSLATE SCREEN -->
+  <div class="screen" id="screen-translate">
+    <div class="hero" style="padding-bottom:16px">
+      <div style="color:white;font-family:'Playfair Display',serif;font-size:22px;font-weight:600;margin-bottom:4px">Translation</div>
+      <div style="color:rgba(255,255,255,0.75);font-size:13px">Arabic, English & Spanish instantly</div>
+    </div>
+    <div class="translate-wrap">
+      <div class="lang-select-row">
+        <select class="lang-select" id="from-lang">
+          <option value="en">🇺🇸 English</option>
+          <option value="es">🇪🇸 Spanish</option>
+          <option value="ar">🇪🇬 Arabic</option>
+        </select>
+        <button class="swap-btn" onclick="swapLangs()">⇄</button>
+        <select class="lang-select" id="to-lang">
+          <option value="ar">🇪🇬 Arabic</option>
+          <option value="en">🇺🇸 English</option>
+          <option value="es">🇪🇸 Spanish</option>
+        </select>
+      </div>
+      <div class="translate-box">
+        <textarea id="translate-input" placeholder="Type text to translate..."></textarea>
+      </div>
+      <button class="translate-btn" onclick="doTranslate()">Translate now</button>
+      <div class="result-box" id="translate-result">Your translation will appear here...</div>
+
+      <div class="sec-label" style="padding:16px 0 8px">Common phrases</div>
+      <div class="phrase-grid">
+        <div class="phrase-card" onclick="setPhrase('Hello, how are you?')">
+          <div class="phrase-en">Hello, how are you?</div>
+          <div class="phrase-ar">أهلاً، كيف حالك؟</div>
+          <div class="phrase-es">Hola, ¿cómo estás?</div>
+        </div>
+        <div class="phrase-card" onclick="setPhrase('Where is the hospital?')">
+          <div class="phrase-en">Where is the hospital?</div>
+          <div class="phrase-ar">أين المستشفى؟</div>
+          <div class="phrase-es">¿Dónde está el hospital?</div>
+        </div>
+        <div class="phrase-card" onclick="setPhrase('I need a doctor')">
+          <div class="phrase-en">I need a doctor</div>
+          <div class="phrase-ar">أحتاج إلى طبيب</div>
+          <div class="phrase-es">Necesito un médico</div>
+        </div>
+        <div class="phrase-card" onclick="setPhrase('Call the police please')">
+          <div class="phrase-en">Call the police please</div>
+          <div class="phrase-ar">اتصل بالشرطة من فضلك</div>
+          <div class="phrase-es">Llame a la policía por favor</div>
+        </div>
+        <div class="phrase-card" onclick="setPhrase('How much does this cost?')">
+          <div class="phrase-en">How much does this cost?</div>
+          <div class="phrase-ar">بكم هذا؟</div>
+          <div class="phrase-es">¿Cuánto cuesta esto?</div>
+        </div>
+        <div class="phrase-card" onclick="setPhrase('I am lost')">
+          <div class="phrase-en">I am lost</div>
+          <div class="phrase-ar">أنا ضائع</div>
+          <div class="phrase-es">Estoy perdido</div>
+        </div>
+        <div class="phrase-card" onclick="setPhrase('I do not speak Arabic')">
+          <div class="phrase-en">I don't speak Arabic</div>
+          <div class="phrase-ar">لا أتكلم العربية</div>
+          <div class="phrase-es">No hablo árabe</div>
+        </div>
+        <div class="phrase-card" onclick="setPhrase('Thank you very much')">
+          <div class="phrase-en">Thank you very much</div>
+          <div class="phrase-ar">شكراً جزيلاً</div>
+          <div class="phrase-es">Muchas gracias</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE SCREEN -->
+  <div class="screen" id="screen-profile">
+    <div class="profile-hero">
+      <div class="profile-avatar">👤</div>
+      <div class="profile-name">Your Profile</div>
+      <div class="profile-tag">Expat member · Egypt</div>
+    </div>
+
+    <div class="sec-label">My settings</div>
+    <div class="profile-section">
+      <div class="profile-row"><span class="profile-key">Language</span><span class="profile-val">English 🇺🇸</span></div>
+      <div class="profile-row"><span class="profile-key">Home city</span><span class="profile-val">Cairo</span></div>
+      <div class="profile-row"><span class="profile-key">Nationality</span><span class="profile-val">American 🇺🇸</span></div>
+      <div class="profile-row"><span class="profile-key">Emergency contact</span><span class="profile-val">+1 555 0192</span></div>
+    </div>
+
+    <div class="sec-label">Saved services</div>
+    <div class="call-list">
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--red-light)">🏡</div>
+        <div class="call-info">
+          <div class="call-name">Cairo Realty Group</div>
+          <div class="call-sub">Saved realtor</div>
+        </div>
+        <button class="call-action" onclick="toast('📞 Calling saved realtor...')">📞</button>
+      </div>
+      <div class="call-card">
+        <div class="call-avatar" style="background:var(--blue-light)">🏥</div>
+        <div class="call-info">
+          <div class="call-name">As-Salam International</div>
+          <div class="call-sub">Preferred hospital · Cairo</div>
+        </div>
+        <button class="call-action" onclick="toast('📞 Calling hospital...')">📞</button>
+      </div>
+    </div>
+
+    <div class="sec-label">My documents</div>
+    <div class="profile-section">
+      <div class="profile-row"><span class="profile-key">Passport copy</span><span class="doc-status-ok">✅ Uploaded</span></div>
+      <div class="profile-row"><span class="profile-key">Egypt visa</span><span class="doc-status-ok">✅ Uploaded</span></div>
+      <div class="profile-row"><span class="profile-key">Health insurance</span><span class="doc-status-warn">⚠️ Missing — add now</span></div>
+      <div class="profile-row"><span class="profile-key">Lease agreement</span><span class="doc-status-warn">⚠️ Missing — add now</span></div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="goTo('home',this)" id="nav-home">
+      <span class="nav-ico">🏠</span><span class="nav-lbl">Home</span>
+    </button>
+    <button class="nav-item" onclick="goTo('cities',this)" id="nav-cities">
+      <span class="nav-ico">🗺️</span><span class="nav-lbl">Cities</span>
+    </button>
+    <button class="nav-item" onclick="goTo('services',this)" id="nav-services">
+      <span class="nav-ico">⚖️</span><span class="nav-lbl">Services</span>
+    </button>
+    <button class="nav-item" onclick="goTo('safety',this)" id="nav-safety">
+      <span class="nav-ico">🛡️</span><span class="nav-lbl">Safety</span>
+    </button>
+    <button class="nav-item" onclick="goTo('translate',this)" id="nav-translate">
+      <span class="nav-ico">🌐</span><span class="nav-lbl">Translate</span>
+    </button>
+    <button class="nav-item" onclick="goTo('profile',this)" id="nav-profile">
+      <span class="nav-ico">👤</span><span class="nav-lbl">Profile</span>
+    </button>
+  </nav>
+</div>
+
+<!-- MODALS -->
+<div class="modal-backdrop" id="modal-sos">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>🆘 Emergency — Egypt</h3>
+    <p>Tap any number to call immediately. Tourist Police (126) have English speakers available 24/7.</p>
+    <div class="call-list" style="padding:0;margin-bottom:16px">
+      <div class="call-card" onclick="toast('📞 Calling Police 122...');closeModal('sos')">
+        <div class="call-avatar" style="background:var(--red-light)">🚨</div>
+        <div class="call-info"><div class="call-name">Police</div><div class="call-sub">122 · Available 24/7</div></div>
+        <button class="call-action">📞</button>
+      </div>
+      <div class="call-card" onclick="toast('📞 Calling Ambulance 123...');closeModal('sos')">
+        <div class="call-avatar" style="background:var(--red-light)">🚑</div>
+        <div class="call-info"><div class="call-name">Ambulance</div><div class="call-sub">123 · Emergency medical</div></div>
+        <button class="call-action">📞</button>
+      </div>
+      <div class="call-card" onclick="toast('📞 Calling Tourist Police 126...');closeModal('sos')">
+        <div class="call-avatar" style="background:var(--gold-light)">👮</div>
+        <div class="call-info"><div class="call-name">Tourist Police</div><div class="call-sub">126 · English-speaking</div></div>
+        <button class="call-action">📞</button>
+      </div>
+      <div class="call-card" onclick="toast('📞 Calling US Embassy...');closeModal('sos')">
+        <div class="call-avatar" style="background:var(--blue-light)">🇺🇸</div>
+        <div class="call-info"><div class="call-name">US Embassy Cairo</div><div class="call-sub">+20-2-2797-3300</div></div>
+        <button class="call-action">📞</button>
+      </div>
+      <div class="call-card" onclick="toast('📞 Calling Spanish Embassy...');closeModal('sos')">
+        <div class="call-avatar" style="background:var(--gold-light)">🇪🇸</div>
+        <div class="call-info"><div class="call-name">Spanish Embassy Cairo</div><div class="call-sub">+20-2-2735-5965</div></div>
+        <button class="call-action">📞</button>
+      </div>
+    </div>
+    <button class="modal-btn" onclick="closeModal('sos')" style="width:100%">Close</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-crime">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>🦹 Report a crime or theft</h3>
+    <p>Your report will be sent in English to the Tourist Police and translated into Arabic. You will receive a reference number to use at any police station.</p>
+    <input class="form-input" placeholder="Your current location or address" />
+    <input class="form-input" placeholder="Type of incident (theft, assault, fraud...)" />
+    <textarea class="form-textarea" placeholder="Describe what happened in detail..."></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn" onclick="closeModal('crime')">Cancel</button>
+      <button class="modal-btn primary" onclick="toast('✅ Report submitted! Reference: EG-2024-7741');closeModal('crime')">Submit report</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-police-report">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>📋 English police report assistant</h3>
+    <p>We'll help you fill out the official Egyptian police report form in English, then have it translated and notarized for use at any police station in Egypt.</p>
+    <div class="modal-actions">
+      <button class="modal-btn" onclick="closeModal('police-report')">Cancel</button>
+      <button class="modal-btn primary" onclick="toast('Opening report assistant...');closeModal('police-report')">Start form →</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-embassy">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3>🏛️ Embassies & Consulates in Cairo</h3>
+    <p>Contact your embassy for passport emergencies, notarization, and citizen services.</p>
+    <div class="call-list" style="padding:0;margin-bottom:16px">
+      <div class="call-card" onclick="toast('📞 Calling US Embassy...')">
+        <div class="call-avatar" style="background:var(--blue-light)">🇺🇸</div>
+        <div class="call-info"><div class="call-name">United States</div><div class="call-sub">+20-2-2797-3300</div></div>
+        <button class="call-action">📞</button>
+      </div>
+      <div class="call-card" onclick="toast('📞 Calling UK Embassy...')">
+        <div class="call-avatar" style="background:var(--blue-light)">🇬🇧</div>
+        <div class="call-info"><div class="call-name">United Kingdom</div><div class="call-sub">+20-2-2791-6000</div></div>
+        <button class="call-action">📞</button>
+      </div>
+      <div class="call-card" onclick="toast('📞 Calling Spanish Embassy...')">
+        <div class="call-avatar" style="background:var(--gold-light)">🇪🇸</div>
+        <div class="call-info"><div class="call-name">Spain</div><div class="call-sub">+20-2-2735-5965</div></div>
+        <button class="call-action">📞</button>
+      </div>
+      <div class="call-card" onclick="toast('📞 Calling Canadian Embassy...')">
+        <div class="call-avatar" style="background:var(--red-light)">🇨🇦</div>
+        <div class="call-info"><div class="call-name">Canada</div><div class="call-sub">+20-2-2461-2600</div></div>
+        <button class="call-action">📞</button>
+      </div>
+      <div class="call-card" onclick="toast('📞 Calling Australian Embassy...')">
+        <div class="call-avatar" style="background:var(--blue-light)">🇦🇺</div>
+        <div class="call-info"><div class="call-name">Australia</div><div class="call-sub">+20-2-2770-6600</div></div>
+        <button class="call-action">📞</button>
+      </div>
+    </div>
+    <button class="modal-btn" onclick="closeModal('embassy')" style="width:100%">Close</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-city">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h3 id="modal-city-name">Cairo</h3>
+    <p id="modal-city-meta">Browse all verified services for this city, available in English.</p>
+    <div class="city-amenity-grid">
+      <div class="city-amenity-card blue" onclick="toast('Opening hospitals directory...');closeModal('city')">
+        <div class="amenity-ico">🏥</div>
+        <div class="amenity-lbl">Hospitals</div>
+        <div class="amenity-sub">& clinics</div>
+      </div>
+      <div class="city-amenity-card teal" onclick="toast('Opening doctors directory...');closeModal('city')">
+        <div class="amenity-ico">👨‍⚕️</div>
+        <div class="amenity-lbl">Doctors</div>
+        <div class="amenity-sub">English-speaking</div>
+      </div>
+      <div class="city-amenity-card gold" onclick="toast('Opening restaurants...');closeModal('city')">
+        <div class="amenity-ico">🍽️</div>
+        <div class="amenity-lbl">Restaurants</div>
+        <div class="amenity-sub">Halal & international</div>
+      </div>
+      <div class="city-amenity-card red" onclick="toast('Opening pharmacies...');closeModal('city')">
+        <div class="amenity-ico">💊</div>
+        <div class="amenity-lbl">Pharmacies</div>
+        <div class="amenity-sub">24h available</div>
+      </div>
+      <div class="city-amenity-card teal" onclick="toast('Opening schools...');closeModal('city')">
+        <div class="amenity-ico">🏫</div>
+        <div class="amenity-lbl">Schools</div>
+        <div class="amenity-sub">International</div>
+      </div>
+      <div class="city-amenity-card blue" onclick="toast('Opening supermarkets...');closeModal('city')">
+        <div class="amenity-ico">🛒</div>
+        <div class="amenity-lbl">Supermarkets</div>
+        <div class="amenity-sub">& grocery stores</div>
+      </div>
+      <div class="city-amenity-card gold" onclick="toast('Opening banks...');closeModal('city')">
+        <div class="amenity-ico">🏦</div>
+        <div class="amenity-lbl">Banks & ATMs</div>
+        <div class="amenity-sub">International banks</div>
+      </div>
+      <div class="city-amenity-card red" onclick="toast('Opening transport info...');closeModal('city')">
+        <div class="amenity-ico">🚕</div>
+        <div class="amenity-lbl">Transport</div>
+        <div class="amenity-sub">Taxi & metro</div>
+      </div>
+    </div>
+    <button class="modal-btn" onclick="closeModal('city')" style="width:100%">Close</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast-el"></div>
+
+<script>
+  function enterApp() {
+    document.getElementById('screen-welcome').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+  }
+
+  function goTo(name, btn) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    const navEl = document.getElementById('nav-' + name);
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function openModal(id) {
+    document.getElementById('modal-' + id).classList.add('open');
+  }
+  function closeModal(id) {
+    document.getElementById('modal-' + id).classList.remove('open');
+  }
+  document.querySelectorAll('.modal-backdrop').forEach(m => {
+    m.addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('open');
+    });
+  });
+
+  function openCity(name, ar, meta, icon) {
+    document.getElementById('modal-city-name').textContent = icon + ' ' + name + ' — ' + ar;
+    document.getElementById('modal-city-meta').textContent = meta + ' · Tap a category to explore';
+    openModal('city');
+  }
+
+  function filterCities(val) {
+    const cards = document.querySelectorAll('#city-list .city-card');
+    cards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+      card.style.display = text.includes(val.toLowerCase()) ? 'flex' : 'none';
+    });
+  }
+
+  function setLang(lang, btn) {
+    document.querySelectorAll('.lang-pill, .welcome-lang-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    const msgs = { en: '🇺🇸 Language set to English', es: '🇪🇸 Idioma cambiado a Español', ar: '🇪🇬 تم تغيير اللغة للعربية' };
+    toast(msgs[lang] || '');
+  }
+
+  function swapLangs() {
+    const f = document.getElementById('from-lang');
+    const t = document.getElementById('to-lang');
+    const tmp = f.value;
+    f.value = t.value;
+    t.value = tmp;
+  }
+
+  const translations = {
+    'Hello, how are you?': 'أهلاً، كيف حالك؟',
+    'Where is the hospital?': 'أين المستشفى؟',
+    'I need a doctor': 'أحتاج إلى طبيب',
+    'Call the police please': 'اتصل بالشرطة من فضلك',
+    'How much does this cost?': 'بكم هذا؟',
+    'I am lost': 'أنا ضائع',
+    'I do not speak Arabic': 'لا أتكلم العربية',
+    'Thank you very much': 'شكراً جزيلاً',
+    'Good morning': 'صباح الخير',
+    'Good evening': 'مساء الخير',
+    'Yes': 'نعم',
+    'No': 'لا',
+    'Help!': 'النجدة!',
+  };
+
+  function setPhrase(phrase) {
+    document.getElementById('translate-input').value = phrase;
+    doTranslate();
+  }
+
+  function doTranslate() {
+    const input = document.getElementById('translate-input').value.trim();
+    const result = document.getElementById('translate-result');
+    if (!input) { result.textContent = 'Please type something to translate.'; return; }
+    const found = translations[input] || translations[input + '?'];
+    if (found) {
+      result.textContent = found;
+    } else {
+      result.innerHTML = '<span style="opacity:0.6;font-size:13px">Live translation powered by your internet connection — connect to a translation API to enable full translation for any text.</span>';
+    }
+  }
+
+  let toastTimer;
+  function toast(msg) {
+    const el = document.getElementById('toast-el');
+    el.textContent = msg;
+    el.style.display = 'block';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.style.display = 'none'; }, 2800);
+  }
+</script>
+</body>
+</html>
