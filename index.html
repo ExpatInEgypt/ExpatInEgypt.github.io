@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Expat in Egypt</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0E0E12;
+  --surface: #17171D;
+  --surface2: #1F1F28;
+  --surface3: #28283A;
+  --gold: #D4A843;
+  --gold2: #F0C96A;
+  --gold-dim: rgba(212,168,67,0.15);
+  --teal: #2DD4BF;
+  --teal-dim: rgba(45,212,191,0.12);
+  --red: #FF4B4B;
+  --red-dim: rgba(255,75,75,0.15);
+  --blue: #5B9CF6;
+  --blue-dim: rgba(91,156,246,0.12);
+  --purple: #A78BFA;
+  --purple-dim: rgba(167,139,250,0.12);
+  --orange: #FB923C;
+  --orange-dim: rgba(251,146,60,0.12);
+  --green: #4ADE80;
+  --green-dim: rgba(74,222,128,0.12);
+  --text: #F0EEE8;
+  --text2: #9B99A8;
+  --text3: #5A5870;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --r: 14px;
+  --r-sm: 10px;
+  --r-lg: 20px;
+  --r-pill: 100px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow: hidden; }
+
+.app { display: flex; flex-direction: column; height: 100vh; max-width: 430px; margin: 0 auto; position: relative; background: var(--bg); overflow: hidden; }
+
+.status-bar { background: var(--bg); padding: 10px 20px 4px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.status-time { font-size: 12px; font-weight: 600; color: var(--text); }
+.status-icons { display: flex; gap: 5px; font-size: 11px; color: var(--text2); }
+
+.screens { flex: 1; overflow: hidden; position: relative; }
+.screen { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; display: none; padding-bottom: 90px; scrollbar-width: none; }
+.screen::-webkit-scrollbar { display: none; }
+.screen.active { display: block; }
+
+.top-bar { padding: 12px 20px 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.top-bar-left h1 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--text); line-height: 1.1; }
+.top-bar-left p { font-size: 13px; color: var(--text2); margin-top: 2px; }
+.avatar-btn { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold2)); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: none; flex-shrink: 0; font-weight: 700; color: #1a1000; font-family: 'Syne', sans-serif; }
+
+.city-pill-row { padding: 10px 20px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.city-pill-row::-webkit-scrollbar { display: none; }
+.city-pill { flex-shrink: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-pill); padding: 7px 14px; font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.city-pill.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+
+.hero-card { margin: 6px 20px 16px; background: linear-gradient(135deg, #1C1810 0%, #251F0D 50%, #1A2012 100%); border: 1px solid rgba(212,168,67,0.25); border-radius: var(--r-lg); padding: 22px 20px; position: relative; overflow: hidden; }
+.hero-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(212,168,67,0.2) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+.hero-card::after { content: '🏛️'; position: absolute; bottom: 10px; right: 16px; font-size: 52px; opacity: 0.18; pointer-events: none; }
+.hero-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--gold); margin-bottom: 8px; font-weight: 600; }
+.hero-title { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.2; margin-bottom: 6px; }
+.hero-sub { font-size: 13px; color: var(--text2); line-height: 1.55; margin-bottom: 16px; max-width: 220px; }
+
+.emergency-big-btn { display: flex; align-items: center; gap: 10px; background: var(--red); border: none; border-radius: var(--r); padding: 13px 18px; cursor: pointer; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: white; width: 100%; transition: opacity 0.15s, transform 0.1s; position: relative; z-index: 1; }
+.emergency-big-btn:hover { opacity: 0.9; }
+.emergency-big-btn:active { transform: scale(0.97); }
+.emergency-pulse { width: 10px; height: 10px; background: white; border-radius: 50%; animation: epulse 1.3s ease-in-out infinite; flex-shrink: 0; }
+@keyframes epulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } }
+.e-btn-arrow { margin-left: auto; font-size: 18px; opacity: 0.7; }
+
+.section-header { padding: 0 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; margin-top: 20px; }
+.section-header h2 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; color: var(--text); }
+.section-header a { font-size: 13px; color: var(--gold); text-decoration: none; cursor: pointer; }
+
+.icon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 20px; margin-bottom: 4px; }
+.icon-cell { display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer; padding: 6px 0; }
+.icon-box { width: 56px; height: 56px; border-radius: var(--r); display: flex; align-items: center; justify-content: center; font-size: 24px; transition: transform 0.15s; border: 1px solid var(--border); }
+.icon-cell:hover .icon-box { transform: scale(1.06); }
+.icon-label { font-size: 11px; font-weight: 500; color: var(--text2); text-align: center; line-height: 1.3; }
+.ib-gold { background: var(--gold-dim); }
+.ib-teal { background: var(--teal-dim); }
+.ib-blue { background: var(--blue-dim); }
+.ib-red { background: var(--red-dim); }
+.ib-purple { background: var(--purple-dim); }
+.ib-orange { background: var(--orange-dim); }
+.ib-green { background: var(--green-dim); }
+.ib-surface { background: var(--surface2); }
+
+.h-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 0 20px; scrollbar-width: none; }
+.h-scroll::-webkit-scrollbar { display: none; }
+
+.member-card { flex-shrink: 0; width: 148px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 12px; cursor: pointer; transition: border-color 0.15s; }
+.member-card:hover { border-color: var(--border2); }
+.member-avatar { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; font-family: 'Syne', sans-serif; margin-bottom: 10px; }
+.member-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.member-meta { font-size: 11px; color: var(--text2); line-height: 1.4; }
+.member-tag { display: inline-block; margin-top: 8px; font-size: 10px; padding: 3px 8px; border-radius: var(--r-pill); font-weight: 600; }
+
+.resource-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
+.resource-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.resource-card:hover { border-color: var(--border2); background: var(--surface2); }
+.resource-icon { width: 44px; height: 44px; border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.resource-info { flex: 1; min-width: 0; }
+.resource-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.resource-detail { font-size: 12px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.call-chip { background: var(--teal-dim); border: 1px solid var(--teal); color: var(--teal); font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: var(--r-pill); cursor: pointer; text-decoration: none; display: inline-block; font-family: 'Inter', sans-serif; transition: background 0.15s; flex-shrink: 0; }
+.call-chip:hover { background: rgba(45,212,191,0.22); }
+.call-chip-red { background: var(--red-dim); border: 1px solid var(--red); color: var(--red); font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: var(--r-pill); cursor: pointer; text-decoration: none; display: inline-block; font-family: 'Inter', sans-serif; flex-shrink: 0; }
+
+.page-title-block { padding: 12px 20px 16px; }
+.page-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.page-subtitle { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+.filter-row { display: flex; gap: 8px; overflow-x: auto; padding: 0 20px 16px; scrollbar-width: none; }
+.filter-row::-webkit-scrollbar { display: none; }
+.fpill { flex-shrink: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-pill); padding: 7px 15px; font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; white-space: nowrap; }
+.fpill.active, .fpill:hover { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px; margin-bottom: 10px; }
+.g2card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px; cursor: pointer; transition: border-color 0.15s; }
+.g2card:hover { border-color: var(--border2); }
+.g2card .big-emoji { font-size: 28px; margin-bottom: 10px; }
+.g2card .g2name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.g2card .g2desc { font-size: 11px; color: var(--text2); line-height: 1.45; }
+.g2card .g2stars { font-size: 10px; color: var(--gold); margin-top: 6px; }
+
+.form-block { padding: 0 20px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; display: block; }
+.form-input, .form-select, .form-textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--text); outline: none; margin-bottom: 14px; transition: border-color 0.15s; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); }
+.form-input::placeholder, .form-textarea::placeholder { color: var(--text3); }
+.form-select option { background: var(--surface); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.submit-btn { width: 100%; background: var(--gold); color: #1a1000; border: none; border-radius: var(--r); padding: 15px; font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 4px; transition: opacity 0.15s; }
+.submit-btn:hover { opacity: 0.88; }
+
+.interest-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.i-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-pill); padding: 7px 14px; font-size: 12px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+.i-chip.selected { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+
+.bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(14,14,18,0.96); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(5, 1fr); padding: 10px 4px 20px; z-index: 50; flex-shrink: 0; }
+.nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px 0; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+.nav-icon { font-size: 22px; line-height: 1; }
+.nav-label { font-size: 10px; font-weight: 500; color: var(--text3); transition: color 0.15s; }
+.nav-btn.active .nav-label { color: var(--gold); }
+.nav-btn.active .nav-icon { transform: scale(1.1); }
+
+.modal-overlay { position: absolute; inset: 0; z-index: 200; background: rgba(0,0,0,0.7); display: flex; align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.25s; backdrop-filter: blur(4px); }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-sheet { background: var(--surface); border-radius: var(--r-lg) var(--r-lg) 0 0; width: 100%; padding: 0 0 40px; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.32,0.72,0,1); border-top: 1px solid var(--border2); max-height: 90vh; overflow-y: auto; scrollbar-width: none; }
+.modal-sheet::-webkit-scrollbar { display: none; }
+.modal-overlay.open .modal-sheet { transform: translateY(0); }
+.modal-handle { width: 36px; height: 4px; background: var(--surface3); border-radius: 2px; margin: 12px auto 0; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 14px; }
+.modal-title { font-family: 'Syne', sans-serif; font-size: 19px; font-weight: 800; color: var(--text); }
+.modal-close { width: 30px; height: 30px; background: var(--surface2); border: none; border-radius: 50%; color: var(--text2); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.modal-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); padding: 0 20px 10px; }
+
+.em-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px 20px; }
+.em-btn { background: var(--red-dim); border: 1px solid rgba(255,75,75,0.35); border-radius: var(--r); padding: 14px 12px; display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.15s, transform 0.1s; }
+.em-btn:hover { background: rgba(255,75,75,0.25); }
+.em-btn:active { transform: scale(0.96); }
+.em-btn.teal-em { background: var(--teal-dim); border-color: rgba(45,212,191,0.35); }
+.em-num { font-size: 20px; font-weight: 700; font-family: 'Syne', sans-serif; color: var(--text); }
+.em-name { font-size: 11px; color: var(--text2); text-align: center; }
+.em-emoji { font-size: 22px; }
+.em-list { padding: 0 20px; display: flex; flex-direction: column; gap: 8px; }
+.em-row { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+.em-row-info { flex: 1; }
+.em-row-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.em-row-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
+
+.tip-box { margin: 0 20px; background: var(--gold-dim); border: 1px solid rgba(212,168,67,0.2); border-radius: var(--r); padding: 14px 16px; }
+.tip-box-title { font-size: 13px; font-weight: 600; color: var(--gold); margin-bottom: 8px; }
+.tip-box ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.tip-box ul li { font-size: 12px; color: var(--text2); line-height: 1.5; padding-left: 14px; position: relative; }
+.tip-box ul li::before { content: '→'; position: absolute; left: 0; color: var(--gold); font-size: 11px; }
+
+.toast { position: absolute; bottom: 100px; left: 20px; right: 20px; background: var(--surface3); border: 1px solid var(--border2); color: var(--text); padding: 12px 18px; border-radius: var(--r); font-size: 13px; font-weight: 500; z-index: 300; transform: translateY(20px); opacity: 0; transition: all 0.25s; text-align: center; pointer-events: none; }
+.toast.show { transform: translateY(0); opacity: 1; }
+
+.success-block { display: none; text-align: center; padding: 40px 20px 20px; }
+.success-block.show { display: block; }
+.success-emoji { font-size: 56px; margin-bottom: 16px; }
+.success-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.success-sub { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+.spacer { height: 20px; }
+.spacer-sm { height: 10px; }
+.divider { height: 1px; background: var(--border); margin: 18px 20px 0; }
+
+@media (min-width: 500px) {
+  body { background: #07070A; }
+  .app { box-shadow: 0 0 60px rgba(0,0,0,0.6); border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="status-bar">
+    <span class="status-time" id="clockTime">9:41 AM</span>
+    <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+  </div>
+
+  <div class="screens">
+
+    <!-- HOME -->
+    <div class="screen active" id="screen-home">
+      <div class="top-bar">
+        <div class="top-bar-left">
+          <h1>Expat in Egypt 🇪🇬</h1>
+          <p>Your life in Egypt, simplified.</p>
+        </div>
+        <button class="avatar-btn" onclick="showScreen('community')">EX</button>
+      </div>
+
+      <div class="city-pill-row">
+        <div class="city-pill active" onclick="selectCity(this,'Cairo')">📍 Cairo</div>
+        <div class="city-pill" onclick="selectCity(this,'Alexandria')">📍 Alexandria</div>
+        <div class="city-pill" onclick="selectCity(this,'Giza')">📍 Giza</div>
+        <div class="city-pill" onclick="selectCity(this,'Hurghada')">📍 Hurghada</div>
+        <div class="city-pill" onclick="selectCity(this,'Sharm El-Sheikh')">📍 Sharm</div>
+        <div class="city-pill" onclick="selectCity(this,'Luxor')">📍 Luxor</div>
+        <div class="city-pill" onclick="selectCity(this,'Aswan')">📍 Aswan</div>
+        <div class="city-pill" onclick="selectCity(this,'Mansoura')">📍 Mansoura</div>
+        <div class="city-pill" onclick="selectCity(this,'Ismailia')">📍 Ismailia</div>
+      </div>
+
+      <div class="hero-card">
+        <div class="hero-eyebrow">🌍 Welcome, Expat</div>
+        <div class="hero-title">Living in<br><span id="heroCity">Cairo</span></div>
+        <div class="hero-sub">Find housing, schools, community & everything you need to thrive.</div>
+        <button class="emergency-big-btn" onclick="openEmergency()">
+          <div class="emergency-pulse"></div>
+          🆘 Emergency &amp; Safety
+          <span class="e-btn-arrow">›</span>
+        </button>
+      </div>
+
+      <div class="section-header">
+        <h2>Quick Access</h2>
+      </div>
+      <div class="icon-grid">
+        <div class="icon-cell" onclick="showScreen('realestate')">
+          <div class="icon-box ib-gold">🏘️</div>
+          <span class="icon-label">Real Estate</span>
+        </div>
+        <div class="icon-cell" onclick="showScreen('schools')">
+          <div class="icon-box ib-blue">🎓</div>
+          <span class="icon-label">Schools</span>
+        </div>
+        <div class="icon-cell" onclick="showScreen('dining')">
+          <div class="icon-box ib-orange">🍽️</div>
+          <span class="icon-label">Dining</span>
+        </div>
+        <div class="icon-cell" onclick="showScreen('services')">
+          <div class="icon-box ib-purple">⚖️</div>
+          <span class="icon-label">Legal</span>
+        </div>
+        <div class="icon-cell" onclick="showScreen('dining')">
+          <div class="icon-box ib-green">🌳</div>
+          <span class="icon-label">Parks</span>
+        </div>
+        <div class="icon-cell" onclick="showScreen('realestate')">
+          <div class="icon-box ib-teal">🔧</div>
+          <span class="icon-label">Repairs</span>
+        </div>
+        <div class="icon-cell" onclick="showScreen('community')">
+          <div class="icon-box ib-surface">🤝</div>
+          <span class="icon-label">Community</span>
+        </div>
+        <div class="icon-cell" onclick="openEmergency()">
+          <div class="icon-box ib-red">🏥</div>
+          <span class="icon-label">Medical</span>
+        </div>
+      </div>
+
+      <div class="section-header" style="margin-top:22px;">
+        <h2>Meet Expats Nearby</h2>
+        <a onclick="showScreen('community')">See all</a>
+      </div>
+      <div class="h-scroll">
+        <div class="member-card">
+          <div class="member-avatar" style="background:var(--gold-dim);color:var(--gold);">SR</div>
+          <div class="member-name">Sarah R.</div>
+          <div class="member-meta">🇨🇦 Canadian<br>Maadi · 3 yrs</div>
+          <span class="member-tag" style="background:var(--blue-dim);color:var(--blue);">Education</span>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar" style="background:var(--teal-dim);color:var(--teal);">MK</div>
+          <div class="member-name">Michael K.</div>
+          <div class="member-meta">🇩🇪 German<br>Alexandria · 5 yrs</div>
+          <span class="member-tag" style="background:var(--purple-dim);color:var(--purple);">Business</span>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar" style="background:var(--orange-dim);color:var(--orange);">JP</div>
+          <div class="member-name">Jennifer P.</div>
+          <div class="member-meta">🇺🇸 American<br>New Cairo · 2 yrs</div>
+          <span class="member-tag" style="background:var(--green-dim);color:var(--green);">Family</span>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar" style="background:var(--red-dim);color:var(--red);">AT</div>
+          <div class="member-name">Aiko T.</div>
+          <div class="member-meta">🇯🇵 Japanese<br>Cairo · 1 yr</div>
+          <span class="member-tag" style="background:var(--orange-dim);color:var(--orange);">Food</span>
+        </div>
+        <div class="member-card">
+          <div class="member-avatar" style="background:var(--purple-dim);color:var(--purple);">LM</div>
+          <div class="member-name">Lena M.</div>
+          <div class="member-meta">🇫🇷 French<br>Zamalek · 4 yrs</div>
+          <span class="member-tag" style="background:var(--teal-dim);color:var(--teal);">Arts</span>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="tip-box">
+        <div class="tip-box-title">💡 New to Egypt? Quick Tips</div>
+        <ul>
+          <li>Register your residence within 30 days at the local police station</li>
+          <li>Tourist Police (126) speak English — save this number now</li>
+          <li>Use Careem or Uber — safer than unmarked taxis</li>
+          <li>Keep a photo of your passport and visa on your phone</li>
+        </ul>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <!-- REAL ESTATE -->
+    <div class="screen" id="screen-realestate">
+      <div class="page-title-block">
+        <div class="page-title">Real Estate 🏘️</div>
+        <div class="page-subtitle">Realtors, compounds, lawyers &amp; repairs in <span class="city-label">Cairo</span></div>
+      </div>
+      <div class="filter-row">
+        <div class="fpill active" onclick="fp(this)">All</div>
+        <div class="fpill" onclick="fp(this)">🏢 Rentals</div>
+        <div class="fpill" onclick="fp(this)">🏡 Buy / Sell</div>
+        <div class="fpill" onclick="fp(this)">🧑‍💼 Realtors</div>
+        <div class="fpill" onclick="fp(this)">⚖️ Lawyers</div>
+        <div class="fpill" onclick="fp(this)">🔧 Repairs</div>
+        <div class="fpill" onclick="fp(this)">🏘️ Compounds</div>
+      </div>
+      <div class="resource-list">
+        <div class="resource-card"><div class="resource-icon ib-gold">🧑‍💼</div><div class="resource-info"><div class="resource-name">Coldwell Banker Egypt</div><div class="resource-detail">International agency · English-speaking agents</div></div><a href="tel:+20222904700" class="call-chip">📞 Call</a></div>
+        <div class="resource-card"><div class="resource-icon ib-gold">🧑‍💼</div><div class="resource-info"><div class="resource-name">Century 21 Egypt</div><div class="resource-detail">Cairo · New Cairo · Maadi · Zamalek</div></div><a href="tel:+20222623636" class="call-chip">📞 Call</a></div>
+        <div class="resource-card"><div class="resource-icon ib-teal">🏘️</div><div class="resource-info"><div class="resource-name">Maadi Grand Heights</div><div class="resource-detail">Gated compound · Pool · Tennis · Security</div></div><a href="tel:+20225211234" class="call-chip">📞 Inquire</a></div>
+        <div class="resource-card"><div class="resource-icon ib-teal">🏘️</div><div class="resource-info"><div class="resource-name">Swan Lake, Sheikh Zayed</div><div class="resource-detail">Upscale villas &amp; apartments · Expat-friendly</div></div><a href="tel:+20238371000" class="call-chip">📞 Inquire</a></div>
+        <div class="resource-card"><div class="resource-icon ib-red">⚖️</div><div class="resource-info"><div class="resource-name">Zaki &amp; Partners Law Office</div><div class="resource-detail">Lease review · Purchase contracts · Tawtheeq</div></div><a href="tel:+20222930000" class="call-chip">📞 Call</a></div>
+        <div class="resource-card"><div class="resource-icon ib-red">⚖️</div><div class="resource-info"><div class="resource-name">Khaled Soliman Legal</div><div class="resource-detail">Foreign ownership · Residency-by-investment</div></div><a href="tel:+20227360100" class="call-chip">📞 Call</a></div>
+        <div class="resource-card"><div class="resource-icon ib-orange">🔧</div><div class="resource-info"><div class="resource-name">HomeFix Egypt</div><div class="resource-detail">Plumbing · Electrical · AC · English coordinator</div></div><a href="tel:+201000000123" class="call-chip">📞 Call</a></div>
+        <div class="resource-card"><div class="resource-icon ib-orange">🔧</div><div class="resource-info"><div class="resource-name">Beit Al Khabeer Maintenance</div><div class="resource-detail">HVAC · Carpentry · Tiling · Compound contracts</div></div><a href="tel:+201100000456" class="call-chip">📞 Call</a></div>
+      </div>
+      <div class="spacer"></div>
+      <div class="tip-box">
+        <div class="tip-box-title">🏠 Renting in Egypt — Expat Tips</div>
+        <ul>
+          <li>Notarize your lease at the local Shahr Aqari (Tawtheeq)</li>
+          <li>Maadi, Zamalek, New Cairo &amp; Sheikh Zayed are most popular</li>
+          <li>Always get a bilingual lawyer to review your contract</li>
+          <li>Gated compounds offer best security &amp; maintenance</li>
+        </ul>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <!-- SCHOOLS -->
+    <div class="screen" id="screen-schools">
+      <div class="page-title-block">
+        <div class="page-title">Schools 🎓</div>
+        <div class="page-subtitle">International schools &amp; universities in <span class="city-label">Cairo</span></div>
+      </div>
+      <div class="filter-row">
+        <div class="fpill active" onclick="fp(this)">All</div>
+        <div class="fpill" onclick="fp(this)">🇺🇸 American</div>
+        <div class="fpill" onclick="fp(this)">🇬🇧 British</div>
+        <div class="fpill" onclick="fp(this)">🌍 IB</div>
+        <div class="fpill" onclick="fp(this)">🇫🇷 French</div>
+        <div class="fpill" onclick="fp(this)">🎓 University</div>
+        <div class="fpill" onclick="fp(this)">📚 Language</div>
+      </div>
+      <div class="resource-list">
+        <div class="resource-card"><div class="resource-icon ib-blue">🇺🇸</div><div class="resource-info"><div class="resource-name">Cairo American College (CAC)</div><div class="resource-detail">Pre-K–12 · IB Diploma · Maadi · Est. 1945</div></div><a href="tel:+20225198000" class="call-chip">📞 Admissions</a></div>
+        <div class="resource-card"><div class="resource-icon ib-blue">🇺🇸</div><div class="resource-info"><div class="resource-name">American International School</div><div class="resource-detail">K-12 American curriculum · New Cairo</div></div><a href="tel:+20222751000" class="call-chip">📞 Admissions</a></div>
+        <div class="resource-card"><div class="resource-icon ib-purple">🇬🇧</div><div class="resource-info"><div class="resource-name">British International School Cairo</div><div class="resource-detail">IGCSE &amp; A-Levels · English national curriculum</div></div><a href="tel:+20223619000" class="call-chip">📞 Admissions</a></div>
+        <div class="resource-card"><div class="resource-icon ib-teal">🌍</div><div class="resource-info"><div class="resource-name">International School of Choueifat</div><div class="resource-detail">SABIS · KG–12 · Strong STEM · Multiple sites</div></div><a href="tel:+20233370700" class="call-chip">📞 Admissions</a></div>
+        <div class="resource-card"><div class="resource-icon ib-red">🇫🇷</div><div class="resource-info"><div class="resource-name">Lycée Français du Caire</div><div class="resource-detail">French Baccalauréat · Garden City · Est. 1909</div></div><a href="tel:+20223545600" class="call-chip">📞 Admissions</a></div>
+        <div class="resource-card"><div class="resource-icon ib-gold">🎓</div><div class="resource-info"><div class="resource-name">American University in Cairo (AUC)</div><div class="resource-detail">Top English university · UG, PG, Executive Ed.</div></div><a href="tel:+20228101000" class="call-chip">📞 Admissions</a></div>
+        <div class="resource-card"><div class="resource-icon ib-gold">🎓</div><div class="resource-info"><div class="resource-name">Nile University</div><div class="resource-detail">Research-focused · STEM · Sheikh Zayed</div></div><a href="tel:+20238543000" class="call-chip">📞 Admissions</a></div>
+        <div class="resource-card"><div class="resource-icon ib-orange">📚</div><div class="resource-info"><div class="resource-name">Arabic Language Institute (AUC)</div><div class="resource-detail">MSA &amp; Egyptian colloquial · Best in the region</div></div><a href="tel:+20228101000" class="call-chip">📞 Enroll</a></div>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <!-- DINING -->
+    <div class="screen" id="screen-dining">
+      <div class="page-title-block">
+        <div class="page-title">Dining &amp; Parks 🍽️</div>
+        <div class="page-subtitle">Expat-favorite spots in <span class="city-label">Cairo</span></div>
+      </div>
+      <div class="filter-row">
+        <div class="fpill active" onclick="fp(this)">All</div>
+        <div class="fpill" onclick="fp(this)">🍽️ Restaurants</div>
+        <div class="fpill" onclick="fp(this)">☕ Cafés</div>
+        <div class="fpill" onclick="fp(this)">🌳 Parks</div>
+        <div class="fpill" onclick="fp(this)">🏋️ Gyms</div>
+        <div class="fpill" onclick="fp(this)">🎭 Activities</div>
+      </div>
+      <div class="grid2">
+        <div class="g2card"><div class="big-emoji">🌊</div><div class="g2name">Sequoia</div><div class="g2desc">Nile-side · International &amp; Egyptian · Open-air terrace</div><div class="g2stars">★★★★★ Zamalek</div></div>
+        <div class="g2card"><div class="big-emoji">🍣</div><div class="g2name">Tamarai</div><div class="g2desc">Asian fusion on the Nile · Sushi · Thai · Japanese</div><div class="g2stars">★★★★★ Corniche</div></div>
+        <div class="g2card"><div class="big-emoji">🍱</div><div class="g2name">Kazoku</div><div class="g2desc">Japanese &amp; Korean · Loved by expats for authenticity</div><div class="g2stars">★★★★☆ New Cairo</div></div>
+        <div class="g2card"><div class="big-emoji">🌿</div><div class="g2name">Al-Azhar Park</div><div class="g2desc">30 ha green space · Walking paths · Stunning city views</div><div class="g2stars">★★★★★ Islamic Cairo</div></div>
+        <div class="g2card"><div class="big-emoji">🐠</div><div class="g2name">Fish Garden</div><div class="g2desc">Island park · Aquarium · Children's play areas</div><div class="g2stars">★★★★☆ Zamalek</div></div>
+        <div class="g2card"><div class="big-emoji">🎾</div><div class="g2name">Maadi Sporting Club</div><div class="g2desc">Tennis · Pool · Social events · Family memberships</div><div class="g2stars">★★★★★ Maadi</div></div>
+        <div class="g2card"><div class="big-emoji">💪</div><div class="g2name">Gold's Gym Egypt</div><div class="g2desc">Int'l-standard · Classes · PT · Multiple branches</div><div class="g2stars">★★★★☆ Multiple</div></div>
+        <div class="g2card"><div class="big-emoji">🎨</div><div class="g2name">Fagnoon Art Center</div><div class="g2desc">Family art &amp; craft workshops · Expat kids' favorite</div><div class="g2stars">★★★★★ Saqqara Rd</div></div>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="screen" id="screen-services">
+      <div class="page-title-block">
+        <div class="page-title">Services ⚖️</div>
+        <div class="page-subtitle">Lawyers, banks, translators in <span class="city-label">Cairo</span></div>
+      </div>
+      <div class="resource-list">
+        <div class="resource-card"><div class="resource-icon ib-red">🛂</div><div class="resource-info"><div class="resource-name">Visa &amp; Residency Consulting</div><div class="resource-detail">Tourist renewal · Work permits · Investment visas</div></div><a href="tel:+20222341234" class="call-chip">📞 Consult</a></div>
+        <div class="resource-card"><div class="resource-icon ib-red">⚖️</div><div class="resource-info"><div class="resource-name">Matouk Bassiouny Law Firm</div><div class="resource-detail">Corporate · Employment · Real estate · Personal law</div></div><a href="tel:+20227926001" class="call-chip">📞 Call</a></div>
+        <div class="resource-card"><div class="resource-icon ib-blue">🏦</div><div class="resource-info"><div class="resource-name">HSBC Egypt — Expat Banking</div><div class="resource-detail">Multi-currency · International transfers</div></div><a href="tel:19600" class="call-chip">📞 19600</a></div>
+        <div class="resource-card"><div class="resource-icon ib-blue">💰</div><div class="resource-info"><div class="resource-name">Expat Tax Advisory</div><div class="resource-detail">Egyptian income tax · Double-taxation treaties</div></div><a href="tel:+20222736000" class="call-chip">📞 Call</a></div>
+        <div class="resource-card"><div class="resource-icon ib-teal">📄</div><div class="resource-info"><div class="resource-name">DocuTranslate Egypt</div><div class="resource-detail">Certified Arabic ↔ EN / FR / DE · Apostille</div></div><a href="tel:+20222881234" class="call-chip">📞 Call</a></div>
+        <div class="resource-card"><div class="resource-icon ib-orange">📦</div><div class="resource-info"><div class="resource-name">Relo Egypt</div><div class="resource-detail">Full relocation · Housing · Schools · Settling-in</div></div><a href="tel:+20222350000" class="call-chip">📞 Call</a></div>
+      </div>
+      <div class="spacer"></div>
+      <div class="tip-box">
+        <div class="tip-box-title">📋 Government Offices</div>
+        <ul>
+          <li>Visa renewal: Mogamma, Tahrir Square (Sun–Thu)</li>
+          <li>Egyptian Tax Authority Hotline: 16395</li>
+          <li>Labor &amp; Social Insurance: +20 2 2578 7500</li>
+          <li>Traffic Dept (license exchange): Abbassia, Cairo</li>
+        </ul>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <!-- COMMUNITY -->
+    <div class="screen" id="screen-community">
+      <div class="page-title-block">
+        <div class="page-title">Community 🤝</div>
+        <div class="page-subtitle">Register, connect &amp; share with expats across Egypt</div>
+      </div>
+      <div class="section-header" style="margin-top:0;">
+        <h2>Expats Near You</h2>
+      </div>
+      <div class="h-scroll" style="margin-bottom:20px;">
+        <div class="member-card"><div class="member-avatar" style="background:var(--gold-dim);color:var(--gold);">SR</div><div class="member-name">Sarah R.</div><div class="member-meta">🇨🇦 Canadian<br>Maadi · 3 yrs</div><span class="member-tag" style="background:var(--blue-dim);color:var(--blue);">Education</span></div>
+        <div class="member-card"><div class="member-avatar" style="background:var(--teal-dim);color:var(--teal);">MK</div><div class="member-name">Michael K.</div><div class="member-meta">🇩🇪 German<br>Alexandria · 5 yrs</div><span class="member-tag" style="background:var(--purple-dim);color:var(--purple);">Business</span></div>
+        <div class="member-card"><div class="member-avatar" style="background:var(--orange-dim);color:var(--orange);">JP</div><div class="member-name">Jennifer P.</div><div class="member-meta">🇺🇸 American<br>New Cairo · 2 yrs</div><span class="member-tag" style="background:var(--green-dim);color:var(--green);">Family</span></div>
+        <div class="member-card"><div class="member-avatar" style="background:var(--red-dim);color:var(--red);">AT</div><div class="member-name">Aiko T.</div><div class="member-meta">🇯🇵 Japanese<br>Cairo · 1 yr</div><span class="member-tag" style="background:var(--orange-dim);color:var(--orange);">Food</span></div>
+        <div class="member-card"><div class="member-avatar" style="background:var(--purple-dim);color:var(--purple);">LM</div><div class="member-name">Lena M.</div><div class="member-meta">🇫🇷 French<br>Zamalek · 4 yrs</div><span class="member-tag" style="background:var(--teal-dim);color:var(--teal);">Arts</span></div>
+      </div>
+      <div class="divider"></div>
+      <div class="spacer"></div>
+      <div class="form-block" id="formBlock">
+        <div style="font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:var(--text);margin-bottom:4px;">Join the Community</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:20px;">Create your expat profile and connect with others</div>
+        <div class="form-row2">
+          <div><label class="form-label">First Name</label><input type="text" class="form-input" id="rFirst" placeholder="First name"></div>
+          <div><label class="form-label">Last Name</label><input type="text" class="form-input" placeholder="Last name"></div>
+        </div>
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="rEmail" placeholder="your@email.com">
+        <label class="form-label">Nationality</label>
+        <select class="form-select">
+          <option value="">Select nationality…</option>
+          <option>American</option><option>British</option><option>Canadian</option><option>Australian</option><option>German</option><option>French</option><option>Italian</option><option>Japanese</option><option>Korean</option><option>Indian</option><option>Other</option>
+        </select>
+        <label class="form-label">City in Egypt</label>
+        <select class="form-select" id="rCity">
+          <option value="">Select your city…</option>
+          <option>Cairo</option><option>Alexandria</option><option>Giza</option><option>Hurghada</option><option>Sharm El-Sheikh</option><option>Luxor</option><option>Aswan</option><option>Mansoura</option><option>Tanta</option>
+        </select>
+        <label class="form-label">Time in Egypt</label>
+        <select class="form-select">
+          <option>Just arrived</option><option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>More than 5 years</option>
+        </select>
+        <label class="form-label">About You</label>
+        <textarea class="form-textarea" placeholder="Share your story, job, tips you've learned…"></textarea>
+        <label class="form-label">Interests</label>
+        <div class="interest-grid">
+          <div class="i-chip" onclick="this.classList.toggle('selected')">🍽️ Food</div>
+          <div class="i-chip" onclick="this.classList.toggle('selected')">🏛️ History</div>
+          <div class="i-chip" onclick="this.classList.toggle('selected')">⚽ Sports</div>
+          <div class="i-chip" onclick="this.classList.toggle('selected')">👨‍👩‍👧 Family</div>
+          <div class="i-chip" onclick="this.classList.toggle('selected')">💼 Business</div>
+          <div class="i-chip" onclick="this.classList.toggle('selected')">🎨 Arts</div>
+          <div class="i-chip" onclick="this.classList.toggle('selected')">🏖️ Travel</div>
+          <div class="i-chip" onclick="this.classList.toggle('selected')">📚 Education</div>
+        </div>
+        <button class="submit-btn" onclick="handleRegister()">Create My Profile →</button>
+        <div class="spacer"></div>
+      </div>
+      <div class="success-block" id="successBlock">
+        <div class="success-emoji">🎉</div>
+        <div class="success-title">Welcome to the Community!</div>
+        <div class="success-sub">Your profile is live. Connect with expats, share experiences, and make Egypt feel like home.</div>
+        <div class="spacer"></div>
+        <div class="tip-box">
+          <div class="tip-box-title">💬 Join Expat Groups</div>
+          <ul>
+            <li>Cairo Expats Facebook Group — 45,000+ members</li>
+            <li>Alexandria Expats Network — monthly meetups</li>
+            <li>Maadi Moms &amp; Families — school &amp; neighborhood advice</li>
+            <li>Egypt Expat Entrepreneurs — business networking</li>
+          </ul>
+        </div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="showScreen('home')" id="nav-home"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-btn" onclick="showScreen('realestate')" id="nav-realestate"><span class="nav-icon">🏘️</span><span class="nav-label">Housing</span></button>
+    <button class="nav-btn" onclick="showScreen('schools')" id="nav-schools"><span class="nav-icon">🎓</span><span class="nav-label">Schools</span></button>
+    <button class="nav-btn" onclick="showScreen('dining')" id="nav-dining"><span class="nav-icon">🍽️</span><span class="nav-label">Dining</span></button>
+    <button class="nav-btn" onclick="showScreen('community')" id="nav-community"><span class="nav-icon">🤝</span><span class="nav-label">Community</span></button>
+  </nav>
+
+  <!-- EMERGENCY MODAL -->
+  <div class="modal-overlay" id="emergencyModal" onclick="closeEmergency(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <div class="modal-title">🆘 Emergency Contacts</div>
+        <button class="modal-close" onclick="closeEmergency()">✕</button>
+      </div>
+      <div class="modal-section-label">Tap Any Number to Call Immediately</div>
+      <div class="em-btn-grid">
+        <a href="tel:122" class="em-btn"><span class="em-emoji">🚔</span><span class="em-num">122</span><span class="em-name">Police</span></a>
+        <a href="tel:123" class="em-btn"><span class="em-emoji">🚑</span><span class="em-num">123</span><span class="em-name">Ambulance</span></a>
+        <a href="tel:123" class="em-btn"><span class="em-emoji">🚒</span><span class="em-num">123</span><span class="em-name">Fire</span></a>
+        <a href="tel:126" class="em-btn"><span class="em-emoji">🏛️</span><span class="em-num">126</span><span class="em-name">Tourist Police</span></a>
+        <a href="tel:16354" class="em-btn teal-em"><span class="em-emoji">🏥</span><span class="em-num">16354</span><span class="em-name">Health Line</span></a>
+        <a href="tel:129" class="em-btn teal-em"><span class="em-emoji">🔥</span><span class="em-num">129</span><span class="em-name">Gas Emergency</span></a>
+      </div>
+      <div class="modal-section-label">🏛️ Embassies — Cairo</div>
+      <div class="em-list">
+        <div class="em-row"><span style="font-size:20px;">🇺🇸</span><div class="em-row-info"><div class="em-row-name">US Embassy</div><div class="em-row-sub">+20 2 2797 3300 · Garden City</div></div><a href="tel:+20227973300" class="call-chip-red">📞 Call</a></div>
+        <div class="em-row"><span style="font-size:20px;">🇬🇧</span><div class="em-row-info"><div class="em-row-name">UK Embassy</div><div class="em-row-sub">+20 2 2791 6000 · Garden City</div></div><a href="tel:+20227916000" class="call-chip-red">📞 Call</a></div>
+        <div class="em-row"><span style="font-size:20px;">🇨🇦</span><div class="em-row-info"><div class="em-row-name">Canadian Embassy</div><div class="em-row-sub">+20 2 2791 8700 · Garden City</div></div><a href="tel:+20227918700" class="call-chip-red">📞 Call</a></div>
+        <div class="em-row"><span style="font-size:20px;">🇩🇪</span><div class="em-row-info"><div class="em-row-name">German Embassy</div><div class="em-row-sub">+20 2 2728 2000 · Garden City</div></div><a href="tel:+20227282000" class="call-chip-red">📞 Call</a></div>
+        <div class="em-row"><span style="font-size:20px;">🇫🇷</span><div class="em-row-info"><div class="em-row-name">French Embassy</div><div class="em-row-sub">+20 2 2394 3200 · Giza</div></div><a href="tel:+20223943200" class="call-chip-red">📞 Call</a></div>
+        <div class="em-row"><span style="font-size:20px;">🇦🇺</span><div class="em-row-info"><div class="em-row-name">Australian Embassy</div><div class="em-row-sub">+20 2 2770 6600 · Cairo</div></div><a href="tel:+20227706600" class="call-chip-red">📞 Call</a></div>
+      </div>
+      <div class="spacer-sm"></div>
+      <div class="modal-section-label">🏥 International Hospitals</div>
+      <div class="em-list">
+        <div class="em-row"><span style="font-size:20px;">🏥</span><div class="em-row-info"><div class="em-row-name">As-Salam International Hospital</div><div class="em-row-sub">Maadi · Accepts international insurance</div></div><a href="tel:+20223635436" class="call-chip">📞 Call</a></div>
+        <div class="em-row"><span style="font-size:20px;">🏥</span><div class="em-row-info"><div class="em-row-name">Dar Al Fouad Hospital</div><div class="em-row-sub">6th October City · International standards</div></div><a href="tel:+20238354000" class="call-chip">📞 Call</a></div>
+        <div class="em-row"><span style="font-size:20px;">🏥</span><div class="em-row-info"><div class="em-row-name">Cleopatra Hospital</div><div class="em-row-sub">Heliopolis · 24hr emergency</div></div><a href="tel:+20224148000" class="call-chip">📞 Call</a></div>
+      </div>
+      <div class="spacer"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+function updateClock() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes();
+  const ap = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('clockTime').textContent = h + ':' + String(m).padStart(2,'0') + ' ' + ap;
+}
+updateClock();
+setInterval(updateClock, 30000);
+
+const navIds = ['home','realestate','schools','dining','services','community'];
+
+function showScreen(id) {
+  navIds.forEach(s => {
+    const sc = document.getElementById('screen-'+s);
+    if (sc) sc.classList.remove('active');
+    const nb = document.getElementById('nav-'+s);
+    if (nb) nb.classList.remove('active');
+  });
+  const sc = document.getElementById('screen-'+id);
+  if (sc) { sc.classList.add('active'); sc.scrollTop = 0; }
+  const nb = document.getElementById('nav-'+id);
+  if (nb) nb.classList.add('active');
+}
+
+function selectCity(el, name) {
+  document.querySelectorAll('.city-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('heroCity').textContent = name;
+  document.querySelectorAll('.city-label').forEach(e => e.textContent = name);
+  showToast('Showing results for ' + name);
+}
+
+function fp(el) {
+  el.closest('.filter-row').querySelectorAll('.fpill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function openEmergency() {
+  document.getElementById('emergencyModal').classList.add('open');
+}
+
+function closeEmergency(e) {
+  if (!e || e.target === document.getElementById('emergencyModal')) {
+    document.getElementById('emergencyModal').classList.remove('open');
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function handleRegister() {
+  const first = document.getElementById('rFirst').value.trim();
+  const email = document.getElementById('rEmail').value.trim();
+  const city = document.getElementById('rCity').value;
+  if (!first || !email || !city) { showToast('Please fill in name, email & city'); return; }
+  document.getElementById('formBlock').style.display = 'none';
+  document.getElementById('successBlock').classList.add('show');
+  showToast('Welcome, ' + first + '! 🎉');
+}
+</script>
+</body>
+</html>
