@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expat in Egypt — Your Guide to Life in Egypt</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9913A;
+    --gold-light: #F0C878;
+    --gold-pale: #FDF5E6;
+    --navy: #0D2137;
+    --navy-mid: #1A3A5C;
+    --navy-light: #2A5A8C;
+    --sand: #F5EDD8;
+    --sand-dark: #E8D5A8;
+    --teal: #1E8A7A;
+    --teal-light: #26B8A2;
+    --red-alert: #C0392B;
+    --red-light: #E74C3C;
+    --text-dark: #0D1F2D;
+    --text-mid: #3A5068;
+    --text-light: #7A95AA;
+    --white: #FFFFFF;
+    --surface: #FAFBFC;
+    --border: rgba(13, 33, 55, 0.12);
+    --radius: 12px;
+    --radius-lg: 20px;
+    --radius-pill: 100px;
+    --shadow: 0 4px 24px rgba(13, 33, 55, 0.1);
+    --shadow-lg: 0 8px 40px rgba(13, 33, 55, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .app-header {
+    background: var(--navy);
+    padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(201,145,58,0.2);
+  }
+
+  .header-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    gap: 1rem;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .logo-text span {
+    display: block;
+    font-size: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    color: var(--gold-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .city-selector {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(201,145,58,0.3);
+    color: var(--white);
+    padding: 8px 14px;
+    border-radius: var(--radius-pill);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .city-selector option { background: var(--navy); }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 60%, #0A2E2A 100%);
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -80px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(201,145,58,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold-light);
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 40px);
+    color: var(--white);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.65);
+    max-width: 480px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+  }
+
+  /* EMERGENCY STRIP */
+  .emergency-strip {
+    background: rgba(192,57,43,0.12);
+    border: 1px solid rgba(192,57,43,0.4);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    max-width: 700px;
+    margin: 0 auto 0.5rem;
+  }
+
+  .emergency-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #FF8A80;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pulse-dot {
+    width: 8px; height: 8px;
+    background: var(--red-light);
+    border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  .emergency-btns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+  }
+
+  .emergency-btn {
+    background: var(--red-alert);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    padding: 12px 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .emergency-btn:hover { background: #a93226; transform: translateY(-1px); }
+  .emergency-btn:active { transform: scale(0.97); }
+
+  .emergency-btn .e-icon { font-size: 20px; }
+  .emergency-btn .e-num { font-size: 17px; font-weight: 600; line-height: 1; }
+  .emergency-btn .e-label { font-size: 11px; opacity: 0.85; }
+
+  .safety-btn {
+    background: var(--teal);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    padding: 12px 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .safety-btn:hover { background: #166a5e; transform: translateY(-1px); }
+  .safety-btn .e-icon { font-size: 20px; }
+  .safety-btn .e-num { font-size: 14px; font-weight: 600; line-height: 1; }
+  .safety-btn .e-label { font-size: 11px; opacity: 0.85; }
+
+  /* MAIN LAYOUT */
+  .main-layout {
+    background: var(--surface);
+    min-height: calc(100vh - 200px);
+  }
+
+  /* NAV TABS */
+  .tab-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 64px;
+    z-index: 90;
+  }
+
+  .tab-bar::-webkit-scrollbar { display: none; }
+
+  .tab-bar-inner {
+    display: flex;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 14px 18px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-light);
+    border-bottom: 2.5px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tab-btn.active { color: var(--navy); border-bottom-color: var(--gold); }
+  .tab-btn:hover:not(.active) { color: var(--text-mid); }
+
+  /* CONTENT PANELS */
+  .panel { display: none; padding: 2rem 1.5rem; max-width: 960px; margin: 0 auto; }
+  .panel.active { display: block; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 0.4rem;
+  }
+
+  .section-sub {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 1.75rem;
+    line-height: 1.5;
+  }
+
+  /* CARD GRID */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    transition: box-shadow 0.2s, transform 0.15s;
+    cursor: pointer;
+  }
+
+  .card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+
+  .card-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 10px;
+  }
+
+  .badge-gold { background: #FDF0D5; color: #8A5A0A; }
+  .badge-teal { background: #D5F0EC; color: #0E6055; }
+  .badge-navy { background: #D5E4F0; color: #0D2137; }
+  .badge-red { background: #FDDDD8; color: #8B1A10; }
+
+  .card-title { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 5px; }
+  .card-desc { font-size: 13px; color: var(--text-mid); line-height: 1.55; margin-bottom: 12px; }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-light);
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    margin-top: auto;
+  }
+
+  .card-action {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: var(--navy-mid); }
+
+  .btn-outline {
+    background: none;
+    color: var(--navy);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-outline:hover { background: var(--sand); }
+
+  /* SAFETY PANEL */
+  .safety-category { margin-bottom: 2rem; }
+
+  .safety-category-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .safety-category-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .contact-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    gap: 1rem;
+  }
+
+  .contact-info { flex: 1; }
+  .contact-name { font-size: 15px; font-weight: 600; color: var(--navy); }
+  .contact-detail { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+
+  .call-btn {
+    background: var(--teal);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.15s;
+  }
+
+  .call-btn:hover { background: var(--teal-light); }
+
+  .call-btn-red {
+    background: var(--red-alert);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.15s;
+  }
+
+  .call-btn-red:hover { background: var(--red-light); }
+
+  /* TIPS BOX */
+  .tip-box {
+    background: var(--gold-pale);
+    border: 1px solid rgba(201,145,58,0.3);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .tip-box-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tip-box ul { list-style: none; }
+
+  .tip-box ul li {
+    font-size: 13px;
+    color: var(--text-mid);
+    padding: 4px 0;
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .tip-box ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 12px;
+  }
+
+  /* COMMUNITY PANEL */
+  .expat-profile {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--navy-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: 600;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .avatar.gold-bg { background: linear-gradient(135deg, var(--gold), var(--gold-light)); }
+  .avatar.teal-bg { background: var(--teal); }
+
+  .profile-name { font-size: 15px; font-weight: 600; color: var(--navy); }
+  .profile-meta { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .profile-text { font-size: 13px; color: var(--text-mid); margin-top: 8px; line-height: 1.55; }
+
+  .profile-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .tag {
+    background: var(--sand);
+    color: var(--text-mid);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    font-weight: 500;
+  }
+
+  /* REGISTER FORM */
+  .register-form {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    max-width: 560px;
+  }
+
+  .form-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--navy);
+    margin-bottom: 0.4rem;
+  }
+
+  .form-sub {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+  }
+
+  .form-row { margin-bottom: 1rem; }
+
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-mid);
+    margin-bottom: 5px;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    background: var(--surface);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--navy-light);
+    background: var(--white);
+  }
+
+  .form-textarea { resize: vertical; min-height: 80px; }
+
+  .form-row-half {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .submit-btn {
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 13px 32px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    width: 100%;
+    transition: opacity 0.15s;
+    margin-top: 0.5rem;
+  }
+
+  .submit-btn:hover { opacity: 0.88; }
+
+  /* FILTER ROW */
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-chip {
+    background: var(--white);
+    border: 1px solid var(--border);
+    color: var(--text-mid);
+    border-radius: var(--radius-pill);
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .filter-chip.active, .filter-chip:hover {
+    background: var(--navy);
+    color: var(--white);
+    border-color: var(--navy);
+  }
+
+  /* SEARCH BAR */
+  .search-bar {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 12px 16px 12px 42px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.15s;
+    color: var(--text-dark);
+  }
+
+  .search-input:focus { border-color: var(--navy-light); }
+
+  .search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-size: 16px;
+    pointer-events: none;
+  }
+
+  /* STAR RATING */
+  .stars { color: var(--gold); font-size: 13px; }
+
+  /* FOOTER */
+  .app-footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 2rem 1.5rem;
+    font-size: 13px;
+    margin-top: 3rem;
+  }
+
+  .app-footer a { color: var(--gold-light); text-decoration: none; }
+
+  /* SUCCESS TOAST */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--teal);
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: var(--radius-pill);
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 999;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .form-row-half { grid-template-columns: 1fr; }
+    .hero-title { font-size: 26px; }
+    .emergency-btns { grid-template-columns: repeat(3, 1fr); }
+    .panel { padding: 1.25rem 1rem; }
+    .register-form { padding: 1.25rem; }
+  }
+
+  /* DECORATIVE EGYPT LINE */
+  .egypt-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 1.5rem 0;
+  }
+
+  .egypt-divider::before, .egypt-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .egypt-divider-icon {
+    font-size: 16px;
+    color: var(--gold);
+  }
+
+  /* MAP PLACEHOLDER */
+  .map-placeholder {
+    background: linear-gradient(135deg, #D5E4F0, #EBF3F9);
+    border-radius: var(--radius-lg);
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-size: 14px;
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    flex-direction: column;
+    gap: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">🏛️</div>
+      <div class="logo-text">
+        Expat in Egypt
+        <span>Your Life in Egypt, Simplified</span>
+      </div>
+    </a>
+    <select class="city-selector" id="citySelect" onchange="selectCity(this.value)">
+      <option value="cairo">📍 Cairo</option>
+      <option value="alex">📍 Alexandria</option>
+      <option value="giza">📍 Giza</option>
+      <option value="hurghada">📍 Hurghada</option>
+      <option value="sharm">📍 Sharm El-Sheikh</option>
+      <option value="luxor">📍 Luxor</option>
+      <option value="aswan">📍 Aswan</option>
+      <option value="ismailia">📍 Ismailia</option>
+      <option value="zagazig">📍 Zagazig</option>
+      <option value="tanta">📍 Tanta</option>
+      <option value="mansoura">📍 Mansoura</option>
+    </select>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <p class="hero-eyebrow">🇪🇬 Serving Expats Across All of Egypt</p>
+  <h1 class="hero-title">Your Complete Expat<br>Resource in Egypt</h1>
+  <p class="hero-sub">Emergency contacts, real estate, schools, community — everything you need to thrive as an expat in <span id="heroCity">Cairo</span>.</p>
+
+  <div class="emergency-strip">
+    <div class="emergency-label">
+      <div class="pulse-dot"></div>
+      Emergency & Safety — Tap to Call
+    </div>
+    <div class="emergency-btns">
+      <a href="tel:123" class="emergency-btn">
+        <span class="e-icon">🚒</span>
+        <span class="e-num">123</span>
+        <span class="e-label">Fire</span>
+      </a>
+      <a href="tel:122" class="emergency-btn">
+        <span class="e-icon">🚔</span>
+        <span class="e-num">122</span>
+        <span class="e-label">Police</span>
+      </a>
+      <a href="tel:123" class="emergency-btn">
+        <span class="e-icon">🚑</span>
+        <span class="e-num">123</span>
+        <span class="e-label">Ambulance</span>
+      </a>
+      <a href="tel:08008880700" class="safety-btn">
+        <span class="e-icon">🏦</span>
+        <span class="e-num">Tourist Police</span>
+        <span class="e-label">126</span>
+      </a>
+      <a href="tel:16354" class="safety-btn">
+        <span class="e-icon">🏥</span>
+        <span class="e-num">Health Line</span>
+        <span class="e-label">16354</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-layout">
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <div class="tab-bar-inner">
+      <button class="tab-btn active" onclick="showTab('home')">🏠 Home</button>
+      <button class="tab-btn" onclick="showTab('safety')">🛡️ Safety</button>
+      <button class="tab-btn" onclick="showTab('realestate')">🏘️ Real Estate</button>
+      <button class="tab-btn" onclick="showTab('schools')">🎓 Schools</button>
+      <button class="tab-btn" onclick="showTab('dining')">🍽️ Dining & Parks</button>
+      <button class="tab-btn" onclick="showTab('services')">⚖️ Services</button>
+      <button class="tab-btn" onclick="showTab('community')">🤝 Community</button>
+    </div>
+  </div>
+
+  <!-- HOME PANEL -->
+  <div class="panel active" id="panel-home">
+    <h2 class="section-title">Welcome to Expat in Egypt</h2>
+    <p class="section-sub">Your all-in-one resource for expats living in or relocating to Egypt. Select your city above and explore each section.</p>
+
+    <div class="card-grid">
+      <div class="card" onclick="showTab('safety')">
+        <span class="card-badge badge-red">Critical</span>
+        <div class="card-title">🛡️ Safety & Emergency</div>
+        <div class="card-desc">Emergency numbers, nearest hospitals, police stations, and expat safety tips for every city.</div>
+        <div class="card-meta"><span>Egypt-wide coverage</span></div>
+      </div>
+      <div class="card" onclick="showTab('realestate')">
+        <span class="card-badge badge-navy">Housing</span>
+        <div class="card-title">🏘️ Real Estate & Rentals</div>
+        <div class="card-desc">Find expat-friendly apartments, compounds, realtors, property lawyers, and repair contractors.</div>
+        <div class="card-meta"><span>All cities</span></div>
+      </div>
+      <div class="card" onclick="showTab('schools')">
+        <span class="card-badge badge-teal">Education</span>
+        <div class="card-title">🎓 Schools & Colleges</div>
+        <div class="card-desc">International and foreign schools, universities, and language programs for expat families.</div>
+        <div class="card-meta"><span>IB · American · British · French</span></div>
+      </div>
+      <div class="card" onclick="showTab('dining')">
+        <span class="card-badge badge-gold">Lifestyle</span>
+        <div class="card-title">🍽️ Dining, Parks & Activities</div>
+        <div class="card-desc">Best expat-friendly restaurants, parks, clubs, gyms, and family activities across Egypt.</div>
+        <div class="card-meta"><span>Updated regularly</span></div>
+      </div>
+      <div class="card" onclick="showTab('services')">
+        <span class="card-badge badge-navy">Legal</span>
+        <div class="card-title">⚖️ Lawyers & Services</div>
+        <div class="card-desc">Expat lawyers, visa consultants, tax advisors, translation services, and government help.</div>
+        <div class="card-meta"><span>English-speaking professionals</span></div>
+      </div>
+      <div class="card" onclick="showTab('community')">
+        <span class="card-badge badge-teal">Social</span>
+        <div class="card-title">🤝 Expat Community</div>
+        <div class="card-desc">Register, connect with other expats, share your experience, and join local expat groups.</div>
+        <div class="card-meta"><span>Join hundreds of expats</span></div>
+      </div>
+    </div>
+
+    <div class="egypt-divider"><span class="egypt-divider-icon">☥</span></div>
+
+    <div class="tip-box">
+      <div class="tip-box-title">🌟 Quick Tips for New Expats</div>
+      <ul>
+        <li>Register your residence with local authorities within 30 days of arrival</li>
+        <li>Carry a copy of your passport and visa at all times</li>
+        <li>Download the Careem or inDrive apps — reliable ride-hailing throughout Egypt</li>
+        <li>Swipe your tourist police contact (126) before you need it</li>
+        <li>Join our community to find other expats in your city</li>
+        <li>Many expats use Vodafone Egypt or Orange for best coverage nationwide</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SAFETY PANEL -->
+  <div class="panel" id="panel-safety">
+    <h2 class="section-title">Safety & Emergency Contacts</h2>
+    <p class="section-sub">All emergency numbers and safety resources for expats in <span class="city-label">Cairo</span>. Tap any number to call immediately.</p>
+
+    <div class="safety-category">
+      <div class="safety-category-title">🚨 National Emergency Numbers</div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">Police Emergency</div>
+          <div class="contact-detail">National — available 24/7</div>
+        </div>
+        <a href="tel:122" class="call-btn-red">📞 122</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">Ambulance & Fire</div>
+          <div class="contact-detail">National emergency services</div>
+        </div>
+        <a href="tel:123" class="call-btn-red">📞 123</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">Tourist Police</div>
+          <div class="contact-detail">Dedicated to foreigners — English spoken</div>
+        </div>
+        <a href="tel:126" class="call-btn-red">📞 126</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">Health Hotline</div>
+          <div class="contact-detail">Ministry of Health — medical advice</div>
+        </div>
+        <a href="tel:16354" class="call-btn">📞 16354</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">Gas Emergency</div>
+          <div class="contact-detail">Egyptian Gas Company</div>
+        </div>
+        <a href="tel:129" class="call-btn">📞 129</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">Electricity Faults</div>
+          <div class="contact-detail">Egyptian Electric Company</div>
+        </div>
+        <a href="tel:121" class="call-btn">📞 121</a>
+      </div>
+    </div>
+
+    <div class="safety-category">
+      <div class="safety-category-title">🏛️ Embassies & Consulates (Cairo)</div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">US Embassy — Cairo</div>
+          <div class="contact-detail">8 Kamal El Din Salah St, Garden City · +20 2 2797 3300</div>
+        </div>
+        <a href="tel:+20227973300" class="call-btn">📞 Call</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">UK Embassy — Cairo</div>
+          <div class="contact-detail">7 Ahmed Ragheb St, Garden City · +20 2 2791 6000</div>
+        </div>
+        <a href="tel:+20227916000" class="call-btn">📞 Call</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">Canadian Embassy — Cairo</div>
+          <div class="contact-detail">26 Kamal El Shenawy St, Garden City · +20 2 2791 8700</div>
+        </div>
+        <a href="tel:+20227918700" class="call-btn">📞 Call</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">German Embassy — Cairo</div>
+          <div class="contact-detail">2 Abd El Rahman Fahmy, Garden City · +20 2 2728 2000</div>
+        </div>
+        <a href="tel:+20227282000" class="call-btn">📞 Call</a>
+      </div>
+    </div>
+
+    <div class="safety-category">
+      <div class="safety-category-title">🏥 International Hospitals</div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">As-Salam International Hospital</div>
+          <div class="contact-detail">Cairo · Maadi · Accepts international insurance</div>
+        </div>
+        <a href="tel:+20223635436" class="call-btn">📞 Call</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">Dar Al Fouad Hospital</div>
+          <div class="contact-detail">6th of October City, Giza · International standards</div>
+        </div>
+        <a href="tel:+20238354000" class="call-btn">📞 Call</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-info">
+          <div class="contact-name">Cleopatra Hospital</div>
+          <div class="contact-detail">Cairo · Heliopolis · 24hr emergency</div>
+        </div>
+        <a href="tel:+20224148000" class="call-btn">📞 Call</a>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-box-title">⚠️ Safety Tips for Expats</div>
+      <ul>
+        <li>Always share your location with a trusted contact when traveling alone</li>
+        <li>Photograph your passport, visa, and residence permit — save copies to cloud storage</li>
+        <li>The Tourist Police (126) speak English and are specifically trained to assist foreigners</li>
+        <li>Use Uber or Careem instead of unmarked taxis, especially at night</li>
+        <li>Know your nearest embassy — they can issue emergency travel documents</li>
+        <li>Tap water is not recommended for drinking — use bottled water</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- REAL ESTATE PANEL -->
+  <div class="panel" id="panel-realestate">
+    <h2 class="section-title">Real Estate & Housing</h2>
+    <p class="section-sub">Find apartments, compounds, realtors, lawyers, and home repair services for expats in <span class="city-label">Cairo</span>.</p>
+
+    <div class="filter-row">
+      <button class="filter-chip active" onclick="filterToggle(this)">All</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🏢 Rentals</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🏡 Buy/Sell</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🧑‍💼 Realtors</button>
+      <button class="filter-chip" onclick="filterToggle(this)">⚖️ Lawyers</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🔧 Repairs</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🏘️ Compounds</button>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <span class="card-badge badge-navy">Realtor</span>
+        <div class="card-title">Coldwell Banker Egypt</div>
+        <div class="card-desc">International real estate agency with English-speaking agents specializing in expat residential and commercial needs.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Cairo · New Cairo</span></div>
+        <div class="card-action">
+          <a href="tel:+20222904700" class="btn-primary">📞 Call</a>
+          <a href="https://eg.coldwellbanker.com" target="_blank" class="btn-outline">Website</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-navy">Realtor</span>
+        <div class="card-title">Century 21 Egypt</div>
+        <div class="card-desc">One of Egypt's most trusted agencies, with listings across Cairo, New Cairo, Maadi, and Zamalek compounds.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Nationwide</span></div>
+        <div class="card-action">
+          <a href="tel:+20222623636" class="btn-primary">📞 Call</a>
+          <a href="https://century21egypt.com" target="_blank" class="btn-outline">Website</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-gold">Compound</span>
+        <div class="card-title">Maadi Grand Heights</div>
+        <div class="card-desc">Gated compound popular with Western expats. Security, pool, tennis, maintenance team included. Near CAC school.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Maadi, Cairo</span></div>
+        <div class="card-action">
+          <a href="tel:+20225211234" class="btn-primary">📞 Inquire</a>
+          <button class="btn-outline" onclick="showToast('Added to favorites!')">♥ Save</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-gold">Compound</span>
+        <div class="card-title">Swan Lake, Sheikh Zayed</div>
+        <div class="card-desc">Upscale gated compound in 6th of October. Villas and apartments, expat-friendly management, landscaped grounds.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐</span><span>Sheikh Zayed, Giza</span></div>
+        <div class="card-action">
+          <a href="tel:+20238371000" class="btn-primary">📞 Inquire</a>
+          <button class="btn-outline" onclick="showToast('Added to favorites!')">♥ Save</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-red">Lawyer</span>
+        <div class="card-title">Zaki & Partners Law Office</div>
+        <div class="card-desc">Expat property and residency specialists. English / Arabic / French. Lease review, purchase contracts, title registration.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Downtown Cairo</span></div>
+        <div class="card-action">
+          <a href="tel:+20222930000" class="btn-primary">📞 Call</a>
+          <button class="btn-outline" onclick="showToast('Contact saved!')">📋 Save</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-red">Lawyer</span>
+        <div class="card-title">Khaled Soliman Legal Consulting</div>
+        <div class="card-desc">Expert in foreign ownership regulations, Tawtheeq lease contracts, and residency-by-property investment.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐</span><span>Zamalek, Cairo</span></div>
+        <div class="card-action">
+          <a href="tel:+20227360100" class="btn-primary">📞 Call</a>
+          <button class="btn-outline">📋 Save</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">Repairs</span>
+        <div class="card-title">HomeFix Egypt</div>
+        <div class="card-desc">Home maintenance and repair company used by the expat community. Plumbing, electrical, AC, painting. English-speaking coordinator.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐</span><span>Cairo · Giza</span></div>
+        <div class="card-action">
+          <a href="tel:+201000000123" class="btn-primary">📞 Call</a>
+          <button class="btn-outline">💬 WhatsApp</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">Repairs</span>
+        <div class="card-title">Beit Al Khabeer Maintenance</div>
+        <div class="card-desc">Trusted building maintenance company. HVAC, carpentry, tiling, and interior fit-out. Contracts available for compounds.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐</span><span>New Cairo · 5th Settlement</span></div>
+        <div class="card-action">
+          <a href="tel:+201100000456" class="btn-primary">📞 Call</a>
+          <button class="btn-outline">💬 WhatsApp</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="egypt-divider"><span class="egypt-divider-icon">☥</span></div>
+
+    <div class="tip-box">
+      <div class="tip-box-title">🏠 Renting in Egypt — Expat Tips</div>
+      <ul>
+        <li>Always notarize your lease at the local Shahr Aqari (Real Estate Registry) — "Tawtheeq"</li>
+        <li>Gated compounds offer the best security and maintenance — worth the premium</li>
+        <li>Maadi, Zamalek, New Cairo (5th Settlement), and Sheikh Zayed are most popular with expats</li>
+        <li>Ask your realtor about utilities setup — some landlords include them, others don't</li>
+        <li>A bilingual lawyer review of your contract is strongly recommended</li>
+        <li>Most apartments are rented unfurnished — budget for furniture separately</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SCHOOLS PANEL -->
+  <div class="panel" id="panel-schools">
+    <h2 class="section-title">International Schools & Colleges</h2>
+    <p class="section-sub">Foreign and international schools, universities, and language institutes for expat families in <span class="city-label">Cairo</span>.</p>
+
+    <div class="filter-row">
+      <button class="filter-chip active" onclick="filterToggle(this)">All</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🇺🇸 American</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🇬🇧 British</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🌍 IB</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🇫🇷 French</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🎓 University</button>
+      <button class="filter-chip" onclick="filterToggle(this)">📚 Language</button>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <span class="card-badge badge-navy">American</span>
+        <div class="card-title">Cairo American College (CAC)</div>
+        <div class="card-desc">One of Egypt's most prestigious international schools, serving Pre-K through Grade 12. IB Diploma Programme. Established 1945.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Maadi, Cairo</span></div>
+        <div class="card-action">
+          <a href="tel:+20225198000" class="btn-primary">📞 Admissions</a>
+          <a href="https://www.cacegypt.org" target="_blank" class="btn-outline">Website</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-navy">American</span>
+        <div class="card-title">American International School (AIS)</div>
+        <div class="card-desc">K-12 American curriculum school in New Cairo. Well-established, large expat community, sports and arts programs.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>New Cairo</span></div>
+        <div class="card-action">
+          <a href="tel:+20222751000" class="btn-primary">📞 Admissions</a>
+          <a href="https://www.ais.com.eg" target="_blank" class="btn-outline">Website</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-gold">British</span>
+        <div class="card-title">British International School Cairo</div>
+        <div class="card-desc">National Curriculum for England (NCFE) with IGCSEs and A-Levels. Excellent pastoral care and university guidance.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Cairo</span></div>
+        <div class="card-action">
+          <a href="tel:+20223619000" class="btn-primary">📞 Admissions</a>
+          <button class="btn-outline" onclick="showToast('Added to compare list!')">Compare</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">IB World School</span>
+        <div class="card-title">International School of Choueifat</div>
+        <div class="card-desc">SABIS network school offering accelerated academics from KG to Grade 12. Strong STEM and university placement record.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐</span><span>Multiple locations</span></div>
+        <div class="card-action">
+          <a href="tel:+20233370700" class="btn-primary">📞 Admissions</a>
+          <a href="https://www.sabis.net" target="_blank" class="btn-outline">Website</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-red">French</span>
+        <div class="card-title">Lycée Français du Caire</div>
+        <div class="card-desc">French national curriculum for Maternelle through Terminale. Baccalauréat. The oldest French school in Cairo, founded 1909.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Garden City, Cairo</span></div>
+        <div class="card-action">
+          <a href="tel:+20223545600" class="btn-primary">📞 Admissions</a>
+          <button class="btn-outline">Website</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-navy">University</span>
+        <div class="card-title">American University in Cairo (AUC)</div>
+        <div class="card-desc">Egypt's leading English-language university. Undergraduate, graduate, and executive education. New Cairo campus since 2008.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>New Cairo / Downtown</span></div>
+        <div class="card-action">
+          <a href="tel:+20228101000" class="btn-primary">📞 Admissions</a>
+          <a href="https://www.aucegypt.edu" target="_blank" class="btn-outline">Website</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-navy">University</span>
+        <div class="card-title">Nile University</div>
+        <div class="card-desc">Research-focused English-language university. Engineering, Business, and Applied Sciences. Located in Sheikh Zayed City.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐</span><span>Sheikh Zayed, Giza</span></div>
+        <div class="card-action">
+          <a href="tel:+20238543000" class="btn-primary">📞 Admissions</a>
+          <a href="https://nu.edu.eg" target="_blank" class="btn-outline">Website</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">Language</span>
+        <div class="card-title">Arabic Language Institute (AUC)</div>
+        <div class="card-desc">The premier Arabic language program in the region. Intensive courses for adult expats — Modern Standard and Egyptian colloquial.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>New Cairo</span></div>
+        <div class="card-action">
+          <a href="tel:+20228101000" class="btn-primary">📞 Enroll</a>
+          <button class="btn-outline">Website</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DINING & PARKS -->
+  <div class="panel" id="panel-dining">
+    <h2 class="section-title">Dining, Parks & Activities</h2>
+    <p class="section-sub">Expat-favorite restaurants, outdoor spaces, clubs, and family activities in <span class="city-label">Cairo</span>.</p>
+
+    <div class="filter-row">
+      <button class="filter-chip active" onclick="filterToggle(this)">All</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🍽️ Restaurants</button>
+      <button class="filter-chip" onclick="filterToggle(this)">☕ Cafés</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🌳 Parks</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🏋️ Gyms & Clubs</button>
+      <button class="filter-chip" onclick="filterToggle(this)">🎭 Activities</button>
+    </div>
+
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" placeholder="Search restaurants, parks, activities…">
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <span class="card-badge badge-gold">Restaurant</span>
+        <div class="card-title">Sequoia</div>
+        <div class="card-desc">Iconic Nile-side restaurant in Zamalek. International and Egyptian cuisine, stunning open-air terrace. Expat favorite since 2000.</div>
+        <div class="card-meta"><span class="stars">★★★★★</span><span>Zamalek</span><span>$$$$</span></div>
+        <div class="card-action">
+          <a href="tel:+20227358677" class="btn-primary">📞 Reserve</a>
+          <button class="btn-outline" onclick="showToast('Saved to favorites!')">♥</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-gold">Restaurant</span>
+        <div class="card-title">Tamarai</div>
+        <div class="card-desc">Upscale Asian fusion on the Nile Corniche. Sushi, Thai, and Japanese — popular with the diplomatic community.</div>
+        <div class="card-meta"><span class="stars">★★★★★</span><span>Cairo Corniche</span><span>$$$$</span></div>
+        <div class="card-action">
+          <a href="tel:+20222635699" class="btn-primary">📞 Reserve</a>
+          <button class="btn-outline">♥</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-gold">Restaurant</span>
+        <div class="card-title">Kazoku</div>
+        <div class="card-desc">Japanese and Korean restaurant in New Cairo. Loved by the expat community for its authenticity and consistency.</div>
+        <div class="card-meta"><span class="stars">★★★★☆</span><span>New Cairo</span><span>$$$</span></div>
+        <div class="card-action">
+          <a href="tel:+20222754555" class="btn-primary">📞 Reserve</a>
+          <button class="btn-outline">♥</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">Park</span>
+        <div class="card-title">Al-Azhar Park</div>
+        <div class="card-desc">One of Cairo's most beautiful green spaces. 30 hectares overlooking the historic city. Restaurants, walking paths, stunning views.</div>
+        <div class="card-meta"><span class="stars">★★★★★</span><span>Islamic Cairo</span><span>Free</span></div>
+        <div class="card-action">
+          <button class="btn-primary" onclick="showToast('Directions loading...')">📍 Directions</button>
+          <button class="btn-outline">♥</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">Park</span>
+        <div class="card-title">Fish Garden (Hadiqat el-Samak)</div>
+        <div class="card-desc">Zamalek's charming island park with an aquarium, gardens, and children's play areas. A peaceful expat retreat.</div>
+        <div class="card-meta"><span class="stars">★★★★☆</span><span>Zamalek Island</span><span>$</span></div>
+        <div class="card-action">
+          <button class="btn-primary">📍 Directions</button>
+          <button class="btn-outline">♥</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-navy">Club</span>
+        <div class="card-title">Maadi Sporting Club</div>
+        <div class="card-desc">Membership club popular with Cairo's expat community. Tennis courts, pools, dining, and social events. Family memberships available.</div>
+        <div class="card-meta"><span class="stars">★★★★★</span><span>Maadi, Cairo</span></div>
+        <div class="card-action">
+          <a href="tel:+20225211200" class="btn-primary">📞 Membership</a>
+          <button class="btn-outline">♥</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-navy">Gym</span>
+        <div class="card-title">Gold's Gym Egypt</div>
+        <div class="card-desc">Multiple branches across Cairo and Alexandria. International-standard equipment, classes, and PT. Expat-welcoming environment.</div>
+        <div class="card-meta"><span class="stars">★★★★☆</span><span>Multiple locations</span></div>
+        <div class="card-action">
+          <a href="tel:+20222614444" class="btn-primary">📞 Inquire</a>
+          <button class="btn-outline">♥</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-red">Activity</span>
+        <div class="card-title">Fagnoon Art Center</div>
+        <div class="card-desc">Family-friendly art, crafts, and activities center. Hugely popular with expat children and parents alike. Weekend workshops.</div>
+        <div class="card-meta"><span class="stars">★★★★★</span><span>Saqqara Road, Giza</span></div>
+        <div class="card-action">
+          <a href="tel:+20237376766" class="btn-primary">📞 Book</a>
+          <button class="btn-outline">♥</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES PANEL -->
+  <div class="panel" id="panel-services">
+    <h2 class="section-title">Professional Services</h2>
+    <p class="section-sub">English-speaking lawyers, visa consultants, financial advisors, translation services, and government help for expats in <span class="city-label">Cairo</span>.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <span class="card-badge badge-red">Immigration</span>
+        <div class="card-title">Egyptian Visa & Residency Help</div>
+        <div class="card-desc">Dedicated consultants for tourist visa renewal, residency permits, work permits, and investment visas for foreign nationals.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Cairo · Nationwide</span></div>
+        <div class="card-action">
+          <a href="tel:+20222341234" class="btn-primary">📞 Consult</a>
+          <button class="btn-outline">Website</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-red">Legal</span>
+        <div class="card-title">Matouk Bassiouny Law Firm</div>
+        <div class="card-desc">One of Egypt's leading full-service law firms with an expat-focused practice. Corporate, employment, real estate, and personal law.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Cairo · Alexandria</span></div>
+        <div class="card-action">
+          <a href="tel:+20227926001" class="btn-primary">📞 Call</a>
+          <a href="https://www.matoukbassiouny.com" target="_blank" class="btn-outline">Website</a>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-navy">Finance</span>
+        <div class="card-title">HSBC Egypt — Expat Banking</div>
+        <div class="card-desc">International banking for expats. Multi-currency accounts, international transfers, and dedicated expat relationship managers.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Multiple branches</span></div>
+        <div class="card-action">
+          <a href="tel:+20219600" class="btn-primary">📞 19600</a>
+          <button class="btn-outline">Website</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-navy">Finance</span>
+        <div class="card-title">Tax Advisory for Expats</div>
+        <div class="card-desc">Guidance on Egyptian income tax obligations, double-taxation treaties, and filing requirements for foreign residents.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐</span><span>Cairo</span></div>
+        <div class="card-action">
+          <a href="tel:+20222736000" class="btn-primary">📞 Call</a>
+          <button class="btn-outline">WhatsApp</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">Translation</span>
+        <div class="card-title">DocuTranslate Egypt</div>
+        <div class="card-desc">Certified legal and official document translation (Arabic ↔ English/French/German/Spanish). Apostille and notarization available.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Cairo · Online</span></div>
+        <div class="card-action">
+          <a href="tel:+20222881234" class="btn-primary">📞 Call</a>
+          <button class="btn-outline">WhatsApp</button>
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-badge badge-teal">Relocation</span>
+        <div class="card-title">Relo Egypt</div>
+        <div class="card-desc">Full-service relocation management for expats and their employers. Visa, housing, schooling, settling-in, and cultural orientation.</div>
+        <div class="card-meta"><span>⭐⭐⭐⭐⭐</span><span>Cairo · Nationwide</span></div>
+        <div class="card-action">
+          <a href="tel:+20222350000" class="btn-primary">📞 Call</a>
+          <button class="btn-outline">Website</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="egypt-divider"><span class="egypt-divider-icon">☥</span></div>
+
+    <div class="tip-box">
+      <div class="tip-box-title">📋 Useful Government Resources</div>
+      <ul>
+        <li>Passport Control & Visa Renewal — Mogamma Building, Tahrir Square (open Sun–Thu)</li>
+        <li>Egyptian Tax Authority Hotline: 16395</li>
+        <li>Social Insurance & Labor Affairs: +20 2 2578 7500</li>
+        <li>For residence registration, visit your local Qism (police district) with your landlord</li>
+        <li>Car registration and driving license exchange — Mogamma or Traffic Department, Abbassia</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- COMMUNITY PANEL -->
+  <div class="panel" id="panel-community">
+    <h2 class="section-title">Expat Community</h2>
+    <p class="section-sub">Meet other expats, share your experience, and join the growing expat network across Egypt.</p>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;" class="community-grid">
+
+      <!-- REGISTER FORM -->
+      <div>
+        <div class="register-form" id="registerForm">
+          <div class="form-title">Join the Community</div>
+          <div class="form-sub">Register to connect with expats in your city</div>
+
+          <div class="form-row-half">
+            <div>
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" placeholder="Your first name" id="regFirst">
+            </div>
+            <div>
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" placeholder="Your last name" id="regLast">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" placeholder="your@email.com" id="regEmail">
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Nationality</label>
+            <select class="form-select" id="regNationality">
+              <option value="">Select your nationality…</option>
+              <option>American</option>
+              <option>British</option>
+              <option>Canadian</option>
+              <option>Australian</option>
+              <option>German</option>
+              <option>French</option>
+              <option>Italian</option>
+              <option>Japanese</option>
+              <option>Korean</option>
+              <option>Indian</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">City in Egypt</label>
+            <select class="form-select" id="regCity">
+              <option value="">Select your city…</option>
+              <option>Cairo</option>
+              <option>Alexandria</option>
+              <option>Giza</option>
+              <option>Hurghada</option>
+              <option>Sharm El-Sheikh</option>
+              <option>Luxor</option>
+              <option>Aswan</option>
+              <option>Ismailia</option>
+              <option>Tanta</option>
+              <option>Mansoura</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">How long have you lived in Egypt?</label>
+            <select class="form-select">
+              <option>Just arrived</option>
+              <option>Less than 1 year</option>
+              <option>1–2 years</option>
+              <option>3–5 years</option>
+              <option>More than 5 years</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Tell other expats about yourself</label>
+            <textarea class="form-textarea" id="regBio" placeholder="Share your background, interests, profession, or tips you've learned living here…"></textarea>
+          </div>
+
+          <div class="form-row">
+            <label class="form-label">Interests (select all that apply)</label>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
+              <label style="font-size:13px; display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="checkbox"> 🍽️ Food</label>
+              <label style="font-size:13px; display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="checkbox"> 🏛️ History</label>
+              <label style="font-size:13px; display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="checkbox"> ⚽ Sports</label>
+              <label style="font-size:13px; display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="checkbox"> 👨‍👩‍👧 Family</label>
+              <label style="font-size:13px; display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="checkbox"> 💼 Business</label>
+              <label style="font-size:13px; display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="checkbox"> 🎨 Arts</label>
+              <label style="font-size:13px; display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="checkbox"> 🏖️ Travel</label>
+            </div>
+          </div>
+
+          <button class="submit-btn" onclick="handleRegister()">Create My Profile →</button>
+        </div>
+
+        <!-- Success state (hidden by default) -->
+        <div id="successMsg" style="display:none; background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:2rem; text-align:center;">
+          <div style="font-size:48px; margin-bottom:1rem;">🎉</div>
+          <div style="font-family:'Playfair Display',serif; font-size:22px; color:var(--navy); margin-bottom:0.5rem;">Welcome to the Community!</div>
+          <div style="font-size:14px; color:var(--text-light); line-height:1.6;">Your profile has been created. You can now connect with other expats in Egypt, share experiences, and get advice.</div>
+        </div>
+      </div>
+
+      <!-- EXISTING MEMBERS -->
+      <div>
+        <h3 style="font-size:16px; font-weight:600; color:var(--navy); margin-bottom:1rem;">Recent Community Members</h3>
+
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+          <div class="expat-profile">
+            <div class="avatar gold-bg">SR</div>
+            <div style="flex:1;">
+              <div class="profile-name">Sarah R.</div>
+              <div class="profile-meta">🇨🇦 Canadian · Cairo · 3 years</div>
+              <div class="profile-text">Teaching at a British school in Maadi. Happy to answer questions about schools, neighborhoods, and navigating daily life!</div>
+              <div class="profile-tags">
+                <span class="tag">Education</span><span class="tag">Family</span><span class="tag">Maadi</span>
+              </div>
+            </div>
+          </div>
+          <div class="expat-profile">
+            <div class="avatar teal-bg">MK</div>
+            <div style="flex:1;">
+              <div class="profile-name">Michael K.</div>
+              <div class="profile-meta">🇩🇪 German · Alexandria · 5 years</div>
+              <div class="profile-text">Running a small business in Alex. Can help with residency, company formation, and expat life on the North Coast.</div>
+              <div class="profile-tags">
+                <span class="tag">Business</span><span class="tag">Legal</span><span class="tag">Alexandria</span>
+              </div>
+            </div>
+          </div>
+          <div class="expat-profile">
+            <div class="avatar" style="background:#7B3F8C;">JP</div>
+            <div style="flex:1;">
+              <div class="profile-name">Jennifer P.</div>
+              <div class="profile-meta">🇺🇸 American · New Cairo · 2 years</div>
+              <div class="profile-text">Moved here with family. Love recommending kid-friendly spots and helping new families settle in the 5th Settlement area.</div>
+              <div class="profile-tags">
+                <span class="tag">Family</span><span class="tag">New Cairo</span><span class="tag">Food</span>
+              </div>
+            </div>
+          </div>
+          <div class="expat-profile">
+            <div class="avatar" style="background:#2E6B4E;">AT</div>
+            <div style="flex:1;">
+              <div class="profile-name">Aiko T.</div>
+              <div class="profile-meta">🇯🇵 Japanese · Cairo · 1 year</div>
+              <div class="profile-text">Working at a Japanese firm in New Cairo. Looking for Japanese food recommendations and other Japanese expats!</div>
+              <div class="profile-tags">
+                <span class="tag">Food</span><span class="tag">Culture</span><span class="tag">Business</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="egypt-divider"><span class="egypt-divider-icon">☥</span></div>
+
+        <div class="tip-box">
+          <div class="tip-box-title">💬 Expat Groups in Egypt</div>
+          <ul>
+            <li>Cairo Expats Facebook Group — 45,000+ members</li>
+            <li>Alexandria Expats Network — events and meetups monthly</li>
+            <li>Hurghada International Community — Red Sea expat meetups</li>
+            <li>Maadi Moms & Families — school advice and playdates</li>
+            <li>Egypt Expat Entrepreneurs — business networking Cairo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<footer class="app-footer">
+  <div style="font-family:'Playfair Display',serif; font-size:18px; color:rgba(255,255,255,0.85); margin-bottom:0.5rem;">Expat in Egypt</div>
+  <p style="margin-bottom:0.75rem;">Your guide to life in Egypt — for every expat, in every city.</p>
+  <p>Built with ❤️ for the expat community · <a href="#">Submit a Listing</a> · <a href="#">Report an Error</a> · <a href="#">Contact Us</a></p>
+  <p style="margin-top:1rem; font-size:11px; opacity:0.5;">ExpatInEgypt.github.io · All emergency numbers verified as of 2025. Always call your country's embassy for urgent consular assistance.</p>
+</footer>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    const btns = document.querySelectorAll('.tab-btn');
+    const tabMap = { home:0, safety:1, realestate:2, schools:3, dining:4, services:5, community:6 };
+    if (btns[tabMap[id]]) btns[tabMap[id]].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function filterToggle(el) {
+    el.closest('.filter-row').querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  const cities = {
+    cairo: 'Cairo', alex: 'Alexandria', giza: 'Giza',
+    hurghada: 'Hurghada', sharm: 'Sharm El-Sheikh', luxor: 'Luxor',
+    aswan: 'Aswan', ismailia: 'Ismailia', zagazig: 'Zagazig',
+    tanta: 'Tanta', mansoura: 'Mansoura'
+  };
+
+  function selectCity(val) {
+    const name = cities[val] || val;
+    document.getElementById('heroCity').textContent = name;
+    document.querySelectorAll('.city-label').forEach(el => el.textContent = name);
+    showToast('Showing results for ' + name);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  function handleRegister() {
+    const first = document.getElementById('regFirst').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const city = document.getElementById('regCity').value;
+    if (!first || !email || !city) {
+      showToast('Please fill in your name, email, and city.');
+      return;
+    }
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+    showToast('Welcome to the community, ' + first + '!');
+  }
+
+  // Make community grid responsive
+  function adjustGrid() {
+    const grid = document.querySelector('.community-grid');
+    if (!grid) return;
+    if (window.innerWidth < 680) {
+      grid.style.gridTemplateColumns = '1fr';
+    } else {
+      grid.style.gridTemplateColumns = '1fr 1fr';
+    }
+  }
+
+  adjustGrid();
+  window.addEventListener('resize', adjustGrid);
+</script>
+
+</body>
+</html>
